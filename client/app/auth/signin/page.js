@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
+import { useLanguage } from "@/app/LanguageContext";
 
 export default function Signin() {
+  const { lang } = useLanguage(); // ← get current language
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Signin Form submitted", { email, password });
+    alert(lang === "bn" ? "সাইন ইন সফল হয়েছে!" : "Sign In Successful!");
   };
 
   return (
@@ -23,13 +27,13 @@ export default function Signin() {
         hover:scale-[1.03]"
       >
         <h1 className="text-2xl sm:text-3xl font-bold text-center text-white drop-shadow mb-6">
-          Sign In
+          {lang === "bn" ? "সাইন ইন" : "Sign In"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
-            placeholder="Email Address"
+            placeholder={lang === "bn" ? "ইমেইল ঠিকানা" : "Email Address"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -39,7 +43,7 @@ export default function Signin() {
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder={lang === "bn" ? "পাসওয়ার্ড" : "Password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -52,7 +56,7 @@ export default function Signin() {
             className="w-full py-3 bg-[#8c562e] text-white rounded-md shadow-xl 
             hover:bg-[#a66b42] transition"
           >
-            Sign In
+            {lang === "bn" ? "সাইন ইন" : "Sign In"}
           </button>
         </form>
       </div>

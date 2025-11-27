@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { useLanguage } from "@/app/LanguageContext";
 
 export default function Signup() {
+  const { lang } = useLanguage(); 
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -11,6 +14,7 @@ export default function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted", { name, email, phone, password });
+    alert(lang === "bn" ? "সাইন আপ সফল হয়েছে!" : "Sign Up Successful!");
   };
 
   return (
@@ -25,13 +29,13 @@ export default function Signup() {
         hover:scale-[1.03]"
       >
         <h1 className="text-2xl sm:text-3xl font-bold text-center text-white drop-shadow">
-          Sign Up
+          {lang === "bn" ? "নিবন্ধন করুন" : "Sign Up"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <input
             type="text"
-            placeholder="Full Name"
+            placeholder={lang === "bn" ? "পূর্ণ নাম" : "Full Name"}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full p-3 rounded-md bg-white/40 border border-white/40 
@@ -41,7 +45,7 @@ export default function Signup() {
 
           <input
             type="email"
-            placeholder="Email Address"
+            placeholder={lang === "bn" ? "ইমেইল ঠিকানা" : "Email Address"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full p-3 rounded-md bg-white/40 border border-white/40 
@@ -51,7 +55,7 @@ export default function Signup() {
 
           <input
             type="tel"
-            placeholder="Phone Number"
+            placeholder={lang === "bn" ? "ফোন নম্বর" : "Phone Number"}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full p-3 rounded-md bg-white/40 border border-white/40 
@@ -61,7 +65,7 @@ export default function Signup() {
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder={lang === "bn" ? "পাসওয়ার্ড" : "Password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 rounded-md bg-white/40 border border-white/40 
@@ -74,7 +78,7 @@ export default function Signup() {
             className="w-full py-3 bg-[#8c562e] text-white rounded-md shadow-xl 
             hover:bg-[#a66b42] transition"
           >
-           Register
+            {lang === "bn" ? "নিবন্ধন করুন" : "Register"}
           </button>
         </form>
       </div>
