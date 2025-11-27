@@ -1,10 +1,10 @@
 "use client";
-
+//sign up page
 import React, { useState } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 
 export default function Signup() {
-  const { lang } = useLanguage(); //global
+  const { lang } = useLanguage(); 
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
