@@ -16,7 +16,7 @@ export default function Navbar({ lang, setLang }) {
           HarvestGuard
         </Link>
 
-        {/* Right side (Desktop) */}
+        {/* Desktop menu */}
         <div className="hidden lg:flex items-center gap-6">
 
           <Link href="/weather" className="hover:text-[#A66A3A]">
@@ -31,18 +31,18 @@ export default function Navbar({ lang, setLang }) {
             Register Crop
           </Link>
 
+          {/* DaisyUI Slider Toggle */}
+          <LanguageToggle lang={lang} setLang={setLang} />
+
           <Link
             href="/auth/signin"
             className="px-4 py-2 bg-[#A66A3A] text-white rounded-lg hover:bg-[#8c562e]"
           >
             Login
           </Link>
-
-          {/* Language Toggle */}
-          <LanguageToggle lang={lang} setLang={setLang} />
         </div>
 
-        {/* Mobile Toggle Btn */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="lg:hidden text-[#5A381F] text-2xl"
@@ -67,6 +67,9 @@ export default function Navbar({ lang, setLang }) {
             Register Crop
           </Link>
 
+          {/* DaisyUI Toggle in mobile */}
+          <LanguageToggle lang={lang} setLang={setLang} />
+
           <Link
             href="/auth/signin"
             className="px-4 py-2 bg-[#A66A3A] text-white rounded-lg hover:bg-[#8c562e] inline-block"
@@ -74,8 +77,6 @@ export default function Navbar({ lang, setLang }) {
             Login
           </Link>
 
-          {/* Language Toggle in Mobile */}
-          <LanguageToggle lang={lang} setLang={setLang} />
         </div>
       )}
     </nav>
