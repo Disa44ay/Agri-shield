@@ -48,3 +48,10 @@ body {
   box-shadow: 0 0 10px #A66A3A, 0 0 18px #A66A3Abb;
 }
 
+@keyframes kenburns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.15); }
+}
+.animate-kenburns {
+  animation: kenburns 22s ease-out infinite alternate;
+}

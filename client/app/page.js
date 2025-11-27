@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
 import FarmerAnimation from "@/components/FarmerAnimation";
 import SolutionFlowSVG from "@/components/SolutionFlowSVG";
 
@@ -11,11 +10,10 @@ export default function LandingPage() {
   const text = {
     en: {
       title: "Bangladesh is losing food before it reaches the plate.",
-      heroStrong: "HarvestGuard turns data into protection.",
+      heroStrong: "AgriShield turns data into protection.",
       subtitle:
-        "Millions of tonnes of food are lost every year — in storage, in transit, and in the field. HarvestGuard warns farmers early, reducing waste and protecting income.",
+        "Millions of tonnes of food are lost every year — in storage, in transit, and in the field. AgriShield warns farmers early, reducing waste and protecting income.",
       getStarted: "Start as a Farmer",
-      sdg: "Aligned with SDG 12.3 — Reduce food loss across the supply chain.",
       problemTitle: "The Reality We Can't Ignore",
       problemText:
         "Over 4.5 million tonnes of food grains are lost each year due to poor storage, handling, and transport.",
@@ -26,101 +24,113 @@ export default function LandingPage() {
     },
     bn: {
       title: "থালার আগে নষ্ট হয়ে যাচ্ছে আমাদের খাবার।",
-      heroStrong: "হারভেস্টগার্ড ডেটাকে রক্ষা-কবচে পরিণত করে।",
+      heroStrong: "AgriShield ডেটাকে রক্ষা-কবচে পরিণত করে।",
       subtitle:
-        "বাংলাদেশে প্রতি বছর লক্ষ লক্ষ টন খাদ্য নষ্ট হয়—গোডাউনে, পরিবহনে, আর মাঠে।",
+        "বাংলাদেশে প্রতি বছর লক্ষ লক্ষ টন খাদ্য নষ্ট হয়—গোডাউনে, পরিবহনে, আর মাঠে। AgriShield আগে থেকেই সংকেত দেয়, যাতে কৃষকের ক্ষতি কমে।",
       getStarted: "কৃষক হিসেবে শুরু করুন",
-      sdg: "এসডিজি ১২.৩ — সরবরাহ শৃঙ্খলে খাদ্য অপচয় কমানোর লক্ষ্য।",
       problemTitle: "যে বাস্তবতা এড়ানো যায় না",
       problemText:
-        "প্রতি বছর ৪.৫ মিলিয়নেরও বেশি টন খাদ্যশস্য নষ্ট হয় সংরক্ষণ ও পরিবহনের সমস্যার কারণে।",
+        "প্রতি বছর ৪.৫ মিলিয়নেরও বেশি টন খাদ্যশস্য নষ্ট হয় খারাপ সংরক্ষণ ও পরিবহনের কারণে।",
       howWorks: "ডেটা থেকে বাঁচানো খাদ্য পর্যন্ত",
       stat1: "৪.৫ মিলিয়ন+ টন অপচয়",
-      stat2: "১.৫ বিলিয়ন ডলার ক্ষতি",
+      stat2: "১.৫ বিলিয়ন ডলার অর্থনৈতিক ক্ষতি",
       stat3: "১২–৩২% খাদ্য অপচয়",
     },
   };
 
-  // Scroll reveal animation
+  // Scroll reveal animations
   useEffect(() => {
     const elements = document.querySelectorAll(".scroll-reveal");
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
-        if (e.isIntersecting) e.target.classList.add("visible");
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+        }
       });
     });
+
     elements.forEach((el) => observer.observe(el));
   }, []);
 
   return (
-    <main className="w-full bg-[#F7EEDC] text-[#5A381F]">
+    <main className="w-full text-white">
 
-      {/* NAVBAR WITH LANGUAGE */}
-      <Navbar lang={lang} setLang={setLang} />
+      {/* HERO SECTION */}
+      <section className="relative w-full min-h-[90vh] flex items-center">
 
-      {/* HERO */}
-      <section className="relative max-w-6xl mx-auto px-4 pt-28 pb-24 flex flex-col lg:flex-row items-center gap-12">
+        <div className="relative max-w-6xl mx-auto px-4 py-24 flex flex-col lg:flex-row items-center gap-16">
 
-        {/* LEFT TEXT */}
-        <div className="flex-1 fade-up">
-          <h1 className="text-3xl lg:text-4xl font-bold leading-snug text-[#5A381F]">
-            {text[lang].title}
-          </h1>
+          {/* LEFT TEXT */}
+          <div className="flex-1 fade-up drop-shadow-[0_3px_6px_rgba(0,0,0,0.55)]">
+            <h1 className="text-3xl lg:text-5xl font-bold leading-snug">
+              {text[lang].title}
+            </h1>
 
-          <p className="mt-3 text-xl lg:text-2xl font-semibold text-[#A66A3A]">
-            {text[lang].heroStrong}
-          </p>
+            <p className="mt-4 text-2xl lg:text-3xl font-semibold text-[#F4D9A3]">
+              {text[lang].heroStrong}
+            </p>
 
-          <p className="mt-6 text-base lg:text-lg text-[#7A6A54] max-w-xl">
-            {text[lang].subtitle}
-          </p>
+            <p className="mt-6 text-lg lg:text-xl text-[#F7EEDC] max-w-xl leading-relaxed">
+              {text[lang].subtitle}
+            </p>
 
-          <button
-            onClick={() => (window.location.href = "/auth/signup")}
-            className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-[#A66A3A] text-white font-semibold rounded-xl text-lg hover:bg-[#8c562e] transition-all shadow-md fade-delay-1"
-          >
-            {text[lang].getStarted} →
-          </button>
+            <button
+              onClick={() => (window.location.href = "/auth/signup")}
+              className="
+                mt-10 px-7 py-3 rounded-xl text-lg font-semibold
+                bg-[#A66A3A] hover:bg-[#8c562e] text-white shadow-xl
+                transition-all backdrop-blur-sm inline-flex items-center gap-2
+              "
+            >
+              {text[lang].getStarted} →
+            </button>
 
-          {/* STATS */}
-          <div className="mt-8 grid sm:grid-cols-3 gap-4 text-xs sm:text-sm fade-delay-3">
-            {[text[lang].stat1, text[lang].stat2, text[lang].stat3].map((t, i) => (
-              <div
-                key={i}
-                className="bg-[#FFF8EC] border border-[#E2C9A6] rounded-xl p-4 shadow-sm text-center text-[#5A381F]"
-              >
-                <p className="font-semibold">{t}</p>
-              </div>
-            ))}
+            {/* Stats */}
+            <div className="mt-10 grid sm:grid-cols-3 gap-4 text-sm fade-delay-3">
+              {[text[lang].stat1, text[lang].stat2, text[lang].stat3].map(
+                (t, i) => (
+                  <div
+                    key={i}
+                    className="
+                      bg-white/20 backdrop-blur-md border border-white/30
+                      rounded-xl p-4 text-center shadow-lg text-white
+                    "
+                  >
+                    <p className="font-semibold">{t}</p>
+                  </div>
+                )
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* RIGHT LOTTIE ANIMATION */}
-        <div className="flex-1 fade-delay-2 h-72 lg:h-96">
-          <FarmerAnimation />
-        </div>
+          {/* RIGHT LOTTIE — Bigger + cinematic */}
+          <div className="flex-1 fade-delay-2 h-[350px] lg:h-[480px] scale-110">
+            <FarmerAnimation />
+          </div>
 
+        </div>
       </section>
 
       {/* PROBLEM SECTION */}
-      <section className="max-w-6xl mx-auto px-4 py-20 scroll-reveal">
-        <h2 className="text-3xl font-bold text-[#A66A3A] text-center">
+      <section className="max-w-6xl mx-auto px-6 py-20 scroll-reveal">
+        <h2 className="text-4xl font-bold text-[#F4D9A3] text-center drop-shadow-lg">
           {text[lang].problemTitle}
         </h2>
-        <p className="mt-6 text-center text-[#5A381F] max-w-3xl mx-auto">
+
+        <p className="mt-6 text-center text-[#FFF7E6] max-w-3xl mx-auto text-lg leading-relaxed drop-shadow">
           {text[lang].problemText}
         </p>
       </section>
 
-      {/* FLOW SECTION */}
-      <section className="bg-[#FFF8EC] py-16 scroll-reveal border-y border-[#E2C9A6]">
+      {/* SOLUTION FLOW */}
+      <section className="bg-[#FFF8EC]/95 py-16 scroll-reveal border-y border-[#E2C9A6]">
         <h2 className="text-3xl font-bold text-[#A66A3A] text-center">
           {text[lang].howWorks}
         </h2>
 
         <p className="mt-4 text-center text-[#5A381F] text-sm max-w-2xl mx-auto">
-          সেন্সর ডেটা, আবহাওয়া সতর্কতা ও মাঠের তথ্য বিশ্লেষণ করে 
-          হারভেস্টগার্ড ঝুঁকি আগেই শনাক্ত করে।
+          সেন্সর ডেটা, আবহাওয়া সতর্কতা ও মাঠের তথ্য বিশ্লেষণ করে AgriShield আগে থেকেই ঝুঁকি শনাক্ত করে।
         </p>
 
         <SolutionFlowSVG />
