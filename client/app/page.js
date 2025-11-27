@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import FarmerAnimation from "@/components/FarmerAnimation";
 import SolutionFlowSVG from "@/components/SolutionFlowSVG";
 import { useLanguage } from "@/app/LanguageContext";
+import ProblemSection from "@/components/ProblemSection";
+import SolutionSection from "@/components/SolutionSection";
 
 export default function LandingPage() {
   const { lang } = useLanguage();
@@ -93,25 +95,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* PROBLEM */}
-      <section className="max-w-6xl mx-auto px-6 py-20 scroll-reveal">
-        <h2 className="text-4xl font-bold text-[#F4D9A3] text-center drop-shadow-xl">{text[lang].problemTitle}</h2>
-
-        <p className="mt-6 text-center text-[#FFF7E6] max-w-3xl mx-auto text-lg leading-relaxed drop-shadow">
-          {text[lang].problemText}
-        </p>
-      </section>
-
-      {/* SOLUTION */}
-      <section className="bg-[#FFF8EC]/95 py-16 scroll-reveal border-y border-[#E2C9A6]">
-        <h2 className="text-3xl font-bold text-[#A66A3A] text-center">{text[lang].howWorks}</h2>
-
-        <p className="mt-4 text-center text-[#5A381F] text-sm max-w-2xl mx-auto">
-          সেন্সর ডেটা, আবহাওয়া সতর্কতা ও মাঠের তথ্য বিশ্লেষণ করে AgriShield আগে থেকেই ঝুঁকি শনাক্ত করে।
-        </p>
-
-        <SolutionFlowSVG />
-      </section>
+      <ProblemSection></ProblemSection>
+      <SolutionSection></SolutionSection>
 
     </main>
   );
