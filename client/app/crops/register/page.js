@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CropRegistrationForm() {
-  const getCtgTime = () => {
+  const getBdTime = () => {
     const now = new Date();
     const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-    return new Date(utc + 6 * 3600000).toISOString(); // UTC+6 for Chattogram
+    const bdTime = new Date(utc + 6 * 3600000); // UTC+6 for Bangladesh
+    const day = String(bdTime.getDate()).padStart(2, "0");
+    const month = String(bdTime.getMonth() + 1).padStart(2, "0");
+    const year = bdTime.getFullYear();
+    const hours = String(bdTime.getHours()).padStart(2, "0");
+    const minutes = String(bdTime.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes} ${day}/${month}/${year} `;
   };
 
   const [formData, setFormData] = useState({
@@ -19,8 +25,16 @@ export default function CropRegistrationForm() {
       "location Name": "",
       "storage Date": "",
     },
-    createdAtTime: getCtgTime(),
+    createdAtTime: getBdTime(),
   });
+
+  // Update createdAtTime live
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFormData((prev) => ({ ...prev, createdAtTime: getBdTime() }));
+    }, 60000); // update every minute
+    return () => clearInterval(timer);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -148,6 +162,16 @@ export default function CropRegistrationForm() {
                 onChange={handleChange}
                 required
                 className="w-full p-3 bg-white/20 text-white rounded-md border border-white/30 focus:outline-none focus:ring-2"
+              />
+            </div>
+            {/* Live Registration Time */}
+            <div className="text-white space-y-2 mt-4">
+              <label>Registration Time & Date</label>
+              <input
+                type="text"
+                value={formData.createdAtTime}
+                readOnly
+                className="w-full p-3 bg-white/10 text-white rounded-md border border-white/20"
               />
             </div>
           </div>
