@@ -15,9 +15,8 @@ export default function CropRegistrationForm() {
     estimatedWeight: "",
     harvestDate: "",
     storage: {
-      "division name": "Chattogram",
-      "district name": "Cumilla",
-      "location Name": "Kotbari Storage Unit",
+      "district name": "",
+      "location Name": "",
       "storage Date": "",
     },
     createdAtTime: getCtgTime(),
