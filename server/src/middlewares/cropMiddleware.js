@@ -57,27 +57,21 @@ function cropMiddleware(req, res, next) {
       );
     }
 
-    if (
-      !storage ||
-      !storage.division ||
-      !storage.district ||
-      !storage.locationName
-    ) {
+    if (!storage || !storage.district || !storage.storageName) {
       return fail(
         res,
         "INVALID_FIELD",
-        "storage.division, storage.district and storage.locationName are required",
+        "storage.district and storage.storageName are required",
         "storage",
         400
       );
     }
 
-    // storage.storageDate is optional; if provided, ensure string
     if (storage.storageDate && typeof storage.storageDate !== "string") {
       return fail(
         res,
         "INVALID_FIELD",
-        "storage.storageDate must be an ISO string",
+        "storage.storageDate must be a string",
         "storage.storageDate",
         400
       );

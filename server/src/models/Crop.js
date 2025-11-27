@@ -3,9 +3,8 @@ const { CROP_TYPES } = require("../config/cropTypes");
 
 const storageSchema = new mongoose.Schema(
   {
-    division: { type: String, required: true },
     district: { type: String, required: true },
-    locationName: { type: String, required: true },
+    storageName: { type: String, required: true },
     storageDate: { type: String }, // ISO
   },
   { _id: false }
