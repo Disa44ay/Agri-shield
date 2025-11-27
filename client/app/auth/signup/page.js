@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 
 export default function Signup() {
-  const { lang } = useLanguage(); 
+  const { lang } = useLanguage(); //global
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
