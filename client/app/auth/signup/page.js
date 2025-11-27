@@ -1,5 +1,5 @@
 "use client";
-//sign up page
+
 import React, { useState } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 
