@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import LanguageToggle from "@/components/LanguageToggle";
+import { useLanguage } from "@/app/LanguageContext";
 
-export default function Navbar({ lang, setLang }) {
+export default function Navbar() {
+  const { lang, setLang } = useLanguage(); // ← FIXES toggle not working
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -18,15 +20,16 @@ export default function Navbar({ lang, setLang }) {
     <nav
       className={`
         w-full fixed top-0 left-0 z-50 transition-all duration-300 border-b
-        ${scrolled
-          ? "bg-[#F7EEDC]/70 backdrop-blur-md border-[#E2C9A6]"
-          : "bg-transparent border-transparent"
+        ${
+          scrolled
+            ? "bg-[#F7EEDC]/70 backdrop-blur-md border-[#E2C9A6]"
+            : "bg-transparent border-transparent"
         }
       `}
     >
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
 
-        {/* Logo */}
+        {/* LOGO */}
         <Link
           href="/"
           className={`
@@ -38,7 +41,7 @@ export default function Navbar({ lang, setLang }) {
           Agri<span className="text-[#A66A3A]">Shield</span>
         </Link>
 
-        {/* Desktop Menu */}
+        {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center gap-8">
 
           <Link
@@ -74,26 +77,28 @@ export default function Navbar({ lang, setLang }) {
             Register Crop
           </Link>
 
-          {/* Language Toggle */}
+          {/* LANGUAGE TOGGLE */}
           <div className="ml-2">
-            <LanguageToggle lang={lang} setLang={setLang} />
+            <LanguageToggle />
           </div>
 
-          {/* Login Button */}
+          {/* LOGIN BUTTON */}
           <Link
             href="/auth/signin"
             className={`
               px-4 py-2 rounded-lg font-semibold transition-all shadow-sm
-              ${scrolled
-                ? "bg-[#A66A3A] text-white hover:bg-[#8c562e]"
-                : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"}
+              ${
+                scrolled
+                  ? "bg-[#A66A3A] text-white hover:bg-[#8c562e]"
+                  : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"
+              }
             `}
           >
             Login
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* MOBILE MENU BUTTON */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className={`
@@ -105,15 +110,18 @@ export default function Navbar({ lang, setLang }) {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
       {menuOpen && (
         <div
           className={`
             lg:hidden px-4 pb-4 flex flex-col gap-4 border-t backdrop-blur-md transition-all
-            ${scrolled ? "bg-[#F7EEDC]/95 border-[#E2C9A6]" : "bg-black/40 border-white/10"}
+            ${
+              scrolled
+                ? "bg-[#F7EEDC]/95 border-[#E2C9A6]"
+                : "bg-black/40 border-white/10"
+            }
           `}
         >
-
           <Link
             href="/weather"
             className={`
@@ -147,16 +155,18 @@ export default function Navbar({ lang, setLang }) {
             Register Crop
           </Link>
 
-          {/* Language toggle */}
-          <LanguageToggle lang={lang} setLang={setLang} />
+          {/* Mobile Language Toggle */}
+          <LanguageToggle />
 
           <Link
             href="/auth/signin"
             className={`
               px-4 py-2 rounded-lg transition-all w-fit
-              ${scrolled
-                ? "bg-[#A66A3A] text-white hover:bg-[#8c562e]"
-                : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"}
+              ${
+                scrolled
+                  ? "bg-[#A66A3A] text-white hover:bg-[#8c562e]"
+                  : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"
+              }
             `}
           >
             Login

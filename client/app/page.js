@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import FarmerAnimation from "@/components/FarmerAnimation";
 import SolutionFlowSVG from "@/components/SolutionFlowSVG";
+import { useLanguage } from "@/app/LanguageContext";
 
 export default function LandingPage() {
-  const [lang, setLang] = useState("en");
+  const { lang } = useLanguage();
 
   const text = {
     en: {
@@ -38,96 +39,72 @@ export default function LandingPage() {
     },
   };
 
-  // Scroll reveal animations
   useEffect(() => {
-    const elements = document.querySelectorAll(".scroll-reveal");
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add("visible");
-        }
-      });
-    });
-
-    elements.forEach((el) => observer.observe(el));
+    const els = document.querySelectorAll(".scroll-reveal");
+    const observer = new IntersectionObserver((entries) =>
+      entries.forEach((e) => e.isIntersecting && e.target.classList.add("visible"))
+    );
+    els.forEach((el) => observer.observe(el));
   }, []);
 
   return (
     <main className="w-full text-white">
 
-      {/* HERO SECTION */}
-      <section className="relative w-full min-h-[90vh] flex items-center">
+      {/* HERO */}
+      <section className="relative w-full min-h-[92vh] flex items-center">
+        <div className="relative max-w-7xl mx-auto px-6 py-24 flex flex-col lg:flex-row items-center gap-20">
 
-        <div className="relative max-w-6xl mx-auto px-4 py-24 flex flex-col lg:flex-row items-center gap-16">
+          {/* LEFT */}
+          <div className="flex-1 fade-up" style={{ textShadow: "0 3px 6px rgba(0,0,0,0.9)" }}>
+            <h1 className="text-4xl lg:text-6xl font-extrabold leading-tight">{text[lang].title}</h1>
 
-          {/* LEFT TEXT */}
-          <div className="flex-1 fade-up drop-shadow-[0_3px_6px_rgba(0,0,0,0.55)]">
-            <h1 className="text-3xl lg:text-5xl font-bold leading-snug">
-              {text[lang].title}
-            </h1>
-
-            <p className="mt-4 text-2xl lg:text-3xl font-semibold text-[#F4D9A3]">
+            <p className="mt-5 text-2xl lg:text-3xl font-bold text-[#F9DFA9] drop-shadow-xl">
               {text[lang].heroStrong}
             </p>
 
-            <p className="mt-6 text-lg lg:text-xl text-[#F7EEDC] max-w-xl leading-relaxed">
-              {text[lang].subtitle}
-            </p>
+            <div className="mt-6 max-w-xl p-5 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl">
+              <p className="text-lg lg:text-xl text-[#FFF9E8] leading-relaxed">{text[lang].subtitle}</p>
+            </div>
 
             <button
               onClick={() => (window.location.href = "/auth/signup")}
-              className="
-                mt-10 px-7 py-3 rounded-xl text-lg font-semibold
-                bg-[#A66A3A] hover:bg-[#8c562e] text-white shadow-xl
-                transition-all backdrop-blur-sm inline-flex items-center gap-2
-              "
+              className="mt-10 px-7 py-3 rounded-xl text-lg font-semibold bg-[#A66A3A] hover:bg-[#8c562e] text-white shadow-xl transition-all inline-flex items-center gap-2"
             >
               {text[lang].getStarted} →
             </button>
 
-            {/* Stats */}
-            <div className="mt-10 grid sm:grid-cols-3 gap-4 text-sm fade-delay-3">
-              {[text[lang].stat1, text[lang].stat2, text[lang].stat3].map(
-                (t, i) => (
-                  <div
-                    key={i}
-                    className="
-                      bg-white/20 backdrop-blur-md border border-white/30
-                      rounded-xl p-4 text-center shadow-lg text-white
-                    "
-                  >
-                    <p className="font-semibold">{t}</p>
-                  </div>
-                )
-              )}
+            <div className="mt-10 grid sm:grid-cols-3 gap-4 text-sm">
+              {[text[lang].stat1, text[lang].stat2, text[lang].stat3].map((item, i) => (
+                <div
+                  key={i}
+                  className="bg-white/15 backdrop-blur-xl border border-white/30 rounded-xl p-4 text-center shadow-lg"
+                  style={{ textShadow: "0 2px 4px rgba(0,0,0,0.7)" }}
+                >
+                  <p className="font-semibold">{item}</p>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* RIGHT LOTTIE — Bigger + cinematic */}
-          <div className="flex-1 fade-delay-2 h-[350px] lg:h-[480px] scale-110">
+          {/* RIGHT */}
+          <div className="flex-1 fade-delay-2 h-[480px] lg:h-[650px] scale-[1.55] drop-shadow-[0_15px_40px_rgba(0,0,0,0.9)]">
             <FarmerAnimation />
           </div>
-
         </div>
       </section>
 
-      {/* PROBLEM SECTION */}
+      {/* PROBLEM */}
       <section className="max-w-6xl mx-auto px-6 py-20 scroll-reveal">
-        <h2 className="text-4xl font-bold text-[#F4D9A3] text-center drop-shadow-lg">
-          {text[lang].problemTitle}
-        </h2>
+        <h2 className="text-4xl font-bold text-[#F4D9A3] text-center drop-shadow-xl">{text[lang].problemTitle}</h2>
 
         <p className="mt-6 text-center text-[#FFF7E6] max-w-3xl mx-auto text-lg leading-relaxed drop-shadow">
           {text[lang].problemText}
         </p>
       </section>
 
-      {/* SOLUTION FLOW */}
+      {/* SOLUTION */}
       <section className="bg-[#FFF8EC]/95 py-16 scroll-reveal border-y border-[#E2C9A6]">
-        <h2 className="text-3xl font-bold text-[#A66A3A] text-center">
-          {text[lang].howWorks}
-        </h2>
+        <h2 className="text-3xl font-bold text-[#A66A3A] text-center">{text[lang].howWorks}</h2>
 
         <p className="mt-4 text-center text-[#5A381F] text-sm max-w-2xl mx-auto">
           সেন্সর ডেটা, আবহাওয়া সতর্কতা ও মাঠের তথ্য বিশ্লেষণ করে AgriShield আগে থেকেই ঝুঁকি শনাক্ত করে।

@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/app/LanguageContext";
 
-export default function LanguageToggle({ lang, setLang }) {
+export default function LanguageToggle() {
+  const { lang, setLang } = useLanguage();
   const isEnglish = lang === "en";
   const [ripple, setRipple] = useState(false);
 
-  // Load saved language
+  // Load saved language on mount
   useEffect(() => {
     const saved = typeof window !== "undefined" && localStorage.getItem("lang");
     if (saved === "en" || saved === "bn") {
@@ -15,7 +17,7 @@ export default function LanguageToggle({ lang, setLang }) {
     }
   }, [setLang]);
 
-  // Save language on change
+  // Save language when changed
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("lang", lang);
@@ -37,7 +39,7 @@ export default function LanguageToggle({ lang, setLang }) {
         overflow: "hidden",
       }}
     >
-      {/* Ripple effect */}
+      {/* Ripple animation */}
       {ripple && (
         <span
           className="absolute rounded-full bg-[#A66A3A]/25 animate-ripple"
@@ -50,11 +52,9 @@ export default function LanguageToggle({ lang, setLang }) {
         />
       )}
 
-      {/* Sliding knob with spring physics */}
+      {/* Sliding knob */}
       <motion.div
-        className={`absolute w-10 h-8 rounded-full shadow-md ${
-          isEnglish ? "bg-[#A66A3A]" : "bg-[#A66A3A] glow-active"
-        }`}
+        className="absolute w-10 h-8 rounded-full shadow-md bg-[#A66A3A]"
         initial={false}
         animate={{
           x: isEnglish ? 0 : 56,
