@@ -1,23 +1,16 @@
 const express = require("express");
 const router = express.Router();
-
-const { requireFields } = require("../middlewares/validateFields");
 const achievementController = require("../controllers/achievementController");
 
-// All achievement
-// Create
-router.post(
-  "/",
-  requireFields(["name", "description", "badgeImage", "level"]),
-  achievementController.createAchievement
-);
-
-// Read
+// CRUD
+router.post("/", achievementController.createAchievement);
 router.get("/", achievementController.getAllAchievements);
 router.get("/:id", achievementController.getAchievementById);
+router.put("/:id", achievementController.updateAchievement);
+router.delete("/:id", achievementController.deleteAchievement);
 
-// Update & Delete
-router.put("/:id", achievementController.updateAchievementById);
-router.delete("/:id", achievementController.deleteAchievementById);
+// Assign/remove achievements using email
+router.post("/:email/add", achievementController.assignAchievementToUser);
+router.post("/:email/remove", achievementController.removeAchievementFromUser);
 
 module.exports = router;

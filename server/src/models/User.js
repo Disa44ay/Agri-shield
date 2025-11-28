@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, index: true },
     name: { type: String, required: true },
     phone: { type: String, required: true },
 
@@ -19,5 +19,8 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Ensures MongoDB creates correct unique index on `email`
+userSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model("User", userSchema);
