@@ -1,0 +1,295 @@
+[
+  {
+    "userEmail": "abdul.karim@example.com",
+    "cropId": 1001,
+    "cropName": "BR-28 Rice",
+    "cropType": "Grain",
+    "estimatedWeightKg": 320,
+    "harvestDate": "2025-01-31",
+    "storageDistrict": "Rajshahi",
+    "storageWarehouse": "Rajshahi Central Storage",
+    "storageDate": "2025-02-03",
+    "registrationTime": "2025-01-28T14:34:00Z"
+  },
+  {
+    "userEmail": "abdul.karim@example.com",
+    "cropId": 1002,
+    "cropName": "Mango (Langra)",
+    "cropType": "Fruit",
+    "estimatedWeightKg": 550,
+    "harvestDate": "2025-06-12",
+    "storageDistrict": "Rajshahi",
+    "storageWarehouse": "Cold Storage 01",
+    "storageDate": "2025-06-15",
+    "registrationTime": "2025-06-12T09:20:00Z"
+  },
+  {
+    "userEmail": "rahima.begum@example.com",
+    "cropId": 1003,
+    "cropName": "Aush Rice",
+    "cropType": "Grain",
+    "estimatedWeightKg": 410,
+    "harvestDate": "2025-03-04",
+    "storageDistrict": "Mymensingh",
+    "storageWarehouse": "Agro Storage Mymensingh",
+    "storageDate": "2025-03-06",
+    "registrationTime": "2025-03-04T11:10:00Z"
+  },
+  {
+    "userEmail": "rahima.begum@example.com",
+    "cropId": 1004,
+    "cropName": "Seasonal Vegetables",
+    "cropType": "Vegetable",
+    "estimatedWeightKg": 120,
+    "harvestDate": "2025-02-21",
+    "storageDistrict": "Mymensingh",
+    "storageWarehouse": "Green House Storage",
+    "storageDate": "2025-02-23",
+    "registrationTime": "2025-02-21T10:24:00Z"
+  },
+  {
+    "userEmail": "shahin.miah@example.com",
+    "cropId": 1005,
+    "cropName": "Potato (Diamond)",
+    "cropType": "Root",
+    "estimatedWeightKg": 670,
+    "harvestDate": "2025-01-15",
+    "storageDistrict": "Cumilla",
+    "storageWarehouse": "Cumilla Storage Unit 2",
+    "storageDate": "2025-01-17",
+    "registrationTime": "2025-01-15T13:00:00Z"
+  },
+  {
+    "userEmail": "shahin.miah@example.com",
+    "cropId": 1006,
+    "cropName": "Tomato Hybrid",
+    "cropType": "Vegetable",
+    "estimatedWeightKg": 95,
+    "harvestDate": "2025-01-27",
+    "storageDistrict": "Cumilla",
+    "storageWarehouse": "Fresh Storage Cumilla",
+    "storageDate": "2025-01-28",
+    "registrationTime": "2025-01-27T16:21:00Z"
+  },
+
+  {
+    "userEmail": "nazmul.hasan@example.com",
+    "cropId": 1007,
+    "cropName": "Wheat",
+    "cropType": "Grain",
+    "estimatedWeightKg": 450,
+    "harvestDate": "2025-03-19",
+    "storageDistrict": "Gazipur",
+    "storageWarehouse": "Gazipur Agro Storage",
+    "storageDate": "2025-03-21",
+    "registrationTime": "2025-03-19T08:40:00Z"
+  },
+
+  {
+    "userEmail": "fatema.khatun@example.com",
+    "cropId": 1008,
+    "cropName": "Jute",
+    "cropType": "Fiber",
+    "estimatedWeightKg": 300,
+    "harvestDate": "2025-08-05",
+    "storageDistrict": "Jessore",
+    "storageWarehouse": "Jessore Fiber Storage",
+    "storageDate": "2025-08-07",
+    "registrationTime": "2025-08-05T09:30:00Z"
+  },
+
+  {
+    "userEmail": "jalal.uddin@example.com",
+    "cropId": 1009,
+    "cropName": "Hilsa Fish (River Catch)",
+    "cropType": "Fish",
+    "estimatedWeightKg": 40,
+    "harvestDate": "2025-07-12",
+    "storageDistrict": "Patuakhali",
+    "storageWarehouse": "Patuakhali Ice Storage",
+    "storageDate": "2025-07-12",
+    "registrationTime": "2025-07-12T06:00:00Z"
+  },
+
+  {
+    "userEmail": "mariam.akter@example.com",
+    "cropId": 1010,
+    "cropName": "Tea Leaves",
+    "cropType": "Leaf",
+    "estimatedWeightKg": 125,
+    "harvestDate": "2025-04-04",
+    "storageDistrict": "Moulvibazar",
+    "storageWarehouse": "Srimangal Tea Storage",
+    "storageDate": "2025-04-05",
+    "registrationTime": "2025-04-04T11:44:00Z"
+  },
+
+  {
+    "userEmail": "shafiqur.rahman@example.com",
+    "cropId": 1011,
+    "cropName": "Maize Hybrid",
+    "cropType": "Grain",
+    "estimatedWeightKg": 380,
+    "harvestDate": "2025-03-22",
+    "storageDistrict": "Dinajpur",
+    "storageWarehouse": "Dinajpur Grain Storage",
+    "storageDate": "2025-03-24",
+    "registrationTime": "2025-03-22T12:15:00Z"
+  },
+
+  {
+    "userEmail": "ayesha.siddika@example.com",
+    "cropId": 1012,
+    "cropName": "Rice (BR-22)",
+    "cropType": "Grain",
+    "estimatedWeightKg": 290,
+    "harvestDate": "2025-02-14",
+    "storageDistrict": "Natore",
+    "storageWarehouse": "Natore Main Storage",
+    "storageDate": "2025-02-16",
+    "registrationTime": "2025-02-14T09:33:00Z"
+  },
+
+  {
+    "userEmail": "kamrul.islam@example.com",
+    "cropId": 1013,
+    "cropName": "Banana (Sabri)",
+    "cropType": "Fruit",
+    "estimatedWeightKg": 190,
+    "harvestDate": "2025-03-11",
+    "storageDistrict": "Manikganj",
+    "storageWarehouse": "Fruit Storage Manikganj",
+    "storageDate": "2025-03-12",
+    "registrationTime": "2025-03-11T16:00:00Z"
+  },
+
+  {
+    "userEmail": "rubina.akter@example.com",
+    "cropId": 1014,
+    "cropName": "Sunflower Seeds",
+    "cropType": "Oilseed",
+    "estimatedWeightKg": 210,
+    "harvestDate": "2025-02-26",
+    "storageDistrict": "Khulna",
+    "storageWarehouse": "Khulna Oilseed Depot",
+    "storageDate": "2025-02-27",
+    "registrationTime": "2025-02-26T14:14:00Z"
+  },
+
+  {
+    "userEmail": "sohag.miah@example.com",
+    "cropId": 1015,
+    "cropName": "Chili Pepper",
+    "cropType": "Vegetable",
+    "estimatedWeightKg": 85,
+    "harvestDate": "2025-02-18",
+    "storageDistrict": "Feni",
+    "storageWarehouse": "Feni Agro Storage",
+    "storageDate": "2025-02-19",
+    "registrationTime": "2025-02-18T08:20:00Z"
+  },
+
+  {
+    "userEmail": "rokeya.sultana@example.com",
+    "cropId": 1016,
+    "cropName": "Mustard Seed",
+    "cropType": "Oilseed",
+    "estimatedWeightKg": 260,
+    "harvestDate": "2025-01-29",
+    "storageDistrict": "Barishal",
+    "storageWarehouse": "Barishal Seed Storage",
+    "storageDate": "2025-01-30",
+    "registrationTime": "2025-01-29T10:05:00Z"
+  },
+
+  {
+    "userEmail": "mohammad.ali@example.com",
+    "cropId": 1017,
+    "cropName": "Tea Leaves",
+    "cropType": "Leaf",
+    "estimatedWeightKg": 140,
+    "harvestDate": "2025-04-18",
+    "storageDistrict": "Habiganj",
+    "storageWarehouse": "Tea Storage Habiganj",
+    "storageDate": "2025-04-19",
+    "registrationTime": "2025-04-18T12:55:00Z"
+  },
+
+  {
+    "userEmail": "shamima.parvin@example.com",
+    "cropId": 1018,
+    "cropName": "Rice (BR-16)",
+    "cropType": "Grain",
+    "estimatedWeightKg": 310,
+    "harvestDate": "2025-02-08",
+    "storageDistrict": "Rangpur",
+    "storageWarehouse": "Rangpur Rice Storage",
+    "storageDate": "2025-02-09",
+    "registrationTime": "2025-02-08T09:00:00Z"
+  },
+
+  {
+    "userEmail": "hafiz.uddin@example.com",
+    "cropId": 1019,
+    "cropName": "Sugarcane",
+    "cropType": "Stem",
+    "estimatedWeightKg": 520,
+    "harvestDate": "2025-03-10",
+    "storageDistrict": "Narsingdi",
+    "storageWarehouse": "Sugarcane Depot",
+    "storageDate": "2025-03-11",
+    "registrationTime": "2025-03-10T13:11:00Z"
+  },
+
+  {
+    "userEmail": "nasima.yasmin@example.com",
+    "cropId": 1020,
+    "cropName": "Tea Leaves",
+    "cropType": "Leaf",
+    "estimatedWeightKg": 160,
+    "harvestDate": "2025-04-12",
+    "storageDistrict": "Sylhet",
+    "storageWarehouse": "Sylhet Tea Storage",
+    "storageDate": "2025-04-13",
+    "registrationTime": "2025-04-12T14:10:00Z"
+  },
+
+  {
+    "userEmail": "ariful.haque@example.com",
+    "cropId": 1021,
+    "cropName": "Mango (Khirsapati)",
+    "cropType": "Fruit",
+    "estimatedWeightKg": 600,
+    "harvestDate": "2025-06-09",
+    "storageDistrict": "Chapainawabganj",
+    "storageWarehouse": "Mango Cold Storage",
+    "storageDate": "2025-06-10",
+    "registrationTime": "2025-06-09T15:14:00Z"
+  },
+
+  {
+    "userEmail": "jinat.jahan@example.com",
+    "cropId": 1022,
+    "cropName": "Vegetables Mix",
+    "cropType": "Vegetable",
+    "estimatedWeightKg": 135,
+    "harvestDate": "2025-02-17",
+    "storageDistrict": "Sherpur",
+    "storageWarehouse": "Sherpur Agro Warehouse",
+    "storageDate": "2025-02-18",
+    "registrationTime": "2025-02-17T08:22:00Z"
+  },
+
+  {
+    "userEmail": "ismail.hossain@example.com",
+    "cropId": 1023,
+    "cropName": "Shrimp (Bagda)",
+    "cropType": "Fish",
+    "estimatedWeightKg": 70,
+    "harvestDate": "2025-05-25",
+    "storageDistrict": "Bagerhat",
+    "storageWarehouse": "Bagerhat Ice Storage",
+    "storageDate": "2025-05-25",
+    "registrationTime": "2025-05-25T06:20:00Z"
+  }
+]

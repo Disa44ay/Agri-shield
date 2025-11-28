@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+
 import { getFarmersData } from "@/api/farmersDataApi";
+import { getCropsData } from "@/api/cropsDataApi";
+import { getAchievementsData } from "@/api/achievementsDataApi";
 import { useLanguage } from "@/app/LanguageContext";
-import Link from "next/link";
 
-// -----------------------------------------------------------------------
-//  TRANSLATION TABLES (English → Bangla)
-// -----------------------------------------------------------------------
-
+// ---------------------------------------------------------------
+// TRANSLATION TABLES
+// ---------------------------------------------------------------
 const divisionBn = {
   Dhaka: "ঢাকা",
   Chattogram: "চট্টগ্রাম",
@@ -107,8 +109,7 @@ const cropsBn = {
   Tea: "চা",
 };
 
-// -----------------------------------------------------------------------
-
+// ---------------- Division Map ----------------
 const divisionMap = {
   Dhaka: ["Dhaka","Faridpur","Gazipur","Gopalganj","Kishoreganj","Madaripur","Manikganj","Munshiganj","Narayanganj","Narsingdi","Rajbari","Shariatpur","Tangail"],
   Chattogram: ["Chattogram","Cox’s Bazar","Cumilla","Brahmanbaria","Feni","Khagrachhari","Bandarban","Rangamati","Noakhali","Laxmipur"],
@@ -119,10 +120,12 @@ const divisionMap = {
   Sylhet: ["Sylhet","Moulvibazar","Habiganj","Sunamganj"],
   Rangpur: ["Rangpur","Dinajpur","Gaibandha","Kurigram","Lalmonirhat","Nilphamari","Panchagarh","Thakurgaon"],
 };
+// ---------------------------------------------------------------
 
 export default function FarmersPage() {
   const { lang } = useLanguage();
 
+  // UI TEXT
   const ui = {
     en: {
       heading: "Our Farmers",
@@ -138,6 +141,7 @@ export default function FarmersPage() {
       prev: "Prev",
       next: "Next",
       page: "Page",
+      noCrop: "No crops registered",
     },
     bn: {
       heading: "আমাদের কৃষকরা",
@@ -153,17 +157,29 @@ export default function FarmersPage() {
       prev: "আগের",
       next: "পরের",
       page: "পৃষ্ঠা",
+      noCrop: "কোনো ফসল নিবন্ধিত নেই",
     },
   };
 
   const t = ui[lang];
 
-  // ------------------------ Fetch Farmers ------------------------
+  // Fetch all data
   const { data: farmers = [], isLoading } = useQuery({
     queryKey: ["farmers"],
     queryFn: getFarmersData,
   });
 
+  const { data: crops = [] } = useQuery({
+    queryKey: ["crops"],
+    queryFn: getCropsData,
+  });
+
+  const { data: achievements = [] } = useQuery({
+    queryKey: ["achievements"],
+    queryFn: getAchievementsData,
+  });
+
+  // Component UI states
   const [selectedCrop, setSelectedCrop] = useState("");
   const [division, setDivision] = useState("");
   const [district, setDistrict] = useState("");
@@ -173,52 +189,78 @@ export default function FarmersPage() {
 
   const farmersPerPage = 9;
 
-  // Unique crops list
-  const allCrops = [...new Set(farmers.flatMap((f) => f.crops))];
+  // Build crop list (all unique cropNames from crops.json)
+  const allCrops = [...new Set(crops.map((c) => c.cropName))];
 
-  // ------------------------ Filtering ------------------------
+  // ---------------------------------------------------------------
+  // JOIN DATA: attach crops + achievements to farmer
+  // ---------------------------------------------------------------
+  const farmersWithData = farmers.map((farmer) => {
+    const farmerCrops = crops.filter((c) => c.userEmail === farmer.userEmail);
+    const farmerAchievements = achievements.filter(
+      (a) => a.userEmail === farmer.userEmail
+    );
+
+    return {
+      ...farmer,
+      crops: farmerCrops,
+      achievements: farmerAchievements,
+    };
+  });
+
+  // ---------------------------------------------------------------
+  // FILTERING LOGIC
+  // ---------------------------------------------------------------
   const filteredFarmers = (() => {
-  let list = [...farmers];
+    let list = [...farmersWithData];
 
-  if (selectedCrop) list = list.filter((f) => f.crops.includes(selectedCrop));
-  if (division) list = list.filter((f) => f.division === division);
-  if (district) list = list.filter((f) => f.district === district);
-  if (harvestDate) list = list.filter((f) => f.harvestDate >= harvestDate);
+    if (selectedCrop)
+      list = list.filter((f) =>
+        f.crops.some((c) => c.cropName === selectedCrop)
+      );
 
-  if (sortBy === "name") list.sort((a, b) => a.name.localeCompare(b.name));
-  if (sortBy === "cropCount") list.sort((a, b) => b.crops.length - a.crops.length);
+    if (division) list = list.filter((f) => f.division === division);
 
-  return list;
-})();
+    if (district) list = list.filter((f) => f.district === district);
 
+    if (harvestDate)
+      list = list.filter((f) =>
+        f.crops.some((c) => c.harvestDate >= harvestDate)
+      );
 
-  // ------------------------ Pagination ------------------------
+    if (sortBy === "name") list.sort((a, b) => a.name.localeCompare(b.name));
+
+    if (sortBy === "cropCount")
+      list.sort((a, b) => b.crops.length - a.crops.length);
+
+    return list;
+  })();
+
+  // ---------------------------------------------------------------
+  // PAGINATION
+  // ---------------------------------------------------------------
   const totalPages = Math.ceil(filteredFarmers.length / farmersPerPage);
   const currentFarmers = filteredFarmers.slice(
     (currentPage - 1) * farmersPerPage,
     currentPage * farmersPerPage
   );
 
-  // ---------------- Pagination Functions ----------------
-    const handleNext = () => {
-      setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-    };
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-    const handlePrev = () => {
-      setCurrentPage((prev) => Math.max(prev - 1, 1));
-    };
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
-  const translate = (value, map) => (lang === "bn" ? map[value] || value : value);
+  const translate = (value, map) =>
+    lang === "bn" ? map[value] || value : value;
 
-  if (isLoading) return <p className="text-center text-white pt-20 text-xl">Loading…</p>;
+  if (isLoading)
+    return <p className="text-center text-white pt-20 text-xl">Loading…</p>;
 
-  // -----------------------------------------------------------------------
-  //  RENDER
-  // -----------------------------------------------------------------------
-
+  // ---------------------------------------------------------------
+  // RENDER UI
+  // ---------------------------------------------------------------
   return (
     <div className="min-h-screen py-12 px-6 max-w-7xl mx-auto">
-
       <motion.h1
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -228,11 +270,13 @@ export default function FarmersPage() {
       </motion.h1>
 
       <div className="flex flex-col lg:flex-row gap-10">
-
-        {/* -------------------- SIDEBAR -------------------- */}
+        {/* -----------------------------------------------------
+             SIDEBAR FILTERS
+        ----------------------------------------------------- */}
         <aside className="w-full lg:w-72 bg-white/10 border border-white/20 backdrop-blur-xl rounded-3xl p-6 h-fit sticky lg:top-24">
-
-          <h2 className="text-xl font-semibold text-[#F4D9A3] mb-5">{t.filters}</h2>
+          <h2 className="text-xl font-semibold text-[#F4D9A3] mb-5">
+            {t.filters}
+          </h2>
 
           {/* Crop */}
           <label className="text-sm text-[#FFF7E6]">{t.crop}</label>
@@ -312,87 +356,77 @@ export default function FarmersPage() {
           </div>
         </aside>
 
-        {/* -------------------- FARMERS GRID -------------------- */}
+        {/* -----------------------------------------------------
+             FARMERS GRID
+        ----------------------------------------------------- */}
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {currentFarmers.map((f) => {
+            const cropList =
+              f.crops.length > 0
+                ? f.crops.map((c) => translate(c.cropName, cropsBn)).join(", ")
+                : t.noCrop;
 
-          {currentFarmers.map((f) => (
-            <Link key={f.id} href={`/farmers/${f.id}`}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="cursor-pointer bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-lg hover:shadow-xl transition"
-              >
-                <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/20 shadow-md">
-                  <Image src={f.avatar} width={112} height={112} alt={f.name} />
-                </div>
+            return (
+              <Link key={f.id} href={`/farmers/${f.id}`}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="cursor-pointer bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-lg hover:shadow-xl transition"
+                >
+                  <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/20 shadow-md">
+                    <Image src={f.avatar} width={112} height={112} alt={f.name} />
+                  </div>
 
-                <h3 className="text-center text-xl font-bold text-[#F4D9A3] mt-3">
-                  {lang === "bn" ? f.name_bn || f.name : f.name}
-                </h3>
+                  <h3 className="text-center text-xl font-bold text-[#F4D9A3] mt-3">
+                    {f.name}
+                  </h3>
 
-                <p className="text-center text-white/80 text-sm">
-                  📍 {translate(f.district, districtBn)}, {translate(f.division, divisionBn)}
-                </p>
+                  <p className="text-center text-white/80 text-sm">
+                    📍 {translate(f.district, districtBn)},{" "}
+                    {translate(f.division, divisionBn)}
+                  </p>
 
-                <p className="text-center text-white mt-2">
-                  🌱 {f.crops.map((c) => translate(c, cropsBn)).join(", ")}
-                </p>
+                  <p className="text-center text-white mt-2">🌱 {cropList}</p>
 
-                <p className="text-center text-white/80 mt-1">
-                  🌾 {f.harvestDate}
-                </p>
-              </motion.div>
-            </Link>
-          ))}
-
+                  {f.crops[0] && (
+                    <p className="text-center text-white/80 mt-1">
+                      🌾 {f.crops[0].harvestDate}
+                    </p>
+                  )}
+                </motion.div>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
-      {/* -------------------- PAGINATION -------------------- */}
+      {/* -----------------------------------------------------
+           PAGINATION
+      ----------------------------------------------------- */}
       {totalPages > 1 && (
         <div className="flex justify-center mt-12">
-          <div
-            className="
-              flex items-center gap-4 sm:gap-6
-              px-6 py-3
-              rounded-xl
-              bg-black/40 backdrop-blur-md
-              border border-white/10
-              shadow-[0_4px_15px_rgba(0,0,0,0.4)]
-            "
-          >
+          <div className="flex items-center gap-5 px-6 py-3 bg-black/40 backdrop-blur-md rounded-xl border border-white/10">
             <button
               onClick={handlePrev}
               disabled={currentPage === 1}
-              className="
-                px-4 py-2 rounded-lg text-white font-semibold 
-                bg-[#A66A3A] hover:bg-[#8b542f] transition
-                disabled:bg-gray-600 disabled:cursor-not-allowed
-              "
+              className="px-4 py-2 rounded-lg text-white font-semibold bg-[#A66A3A] hover:bg-[#8b542f] disabled:bg-gray-600"
             >
               ← {t.prev}
             </button>
 
-            <p className="text-[#F4D9A3] font-bold text-base sm:text-lg whitespace-nowrap">
+            <p className="text-[#F4D9A3] font-bold">
               {t.page} {currentPage} / {totalPages}
             </p>
 
             <button
               onClick={handleNext}
               disabled={currentPage === totalPages}
-              className="
-                px-4 py-2 rounded-lg text-white font-semibold 
-                bg-[#A66A3A] hover:bg-[#8b542f] transition
-                disabled:bg-gray-600 disabled:cursor-not-allowed
-              "
+              className="px-4 py-2 rounded-lg text-white font-semibold bg-[#A66A3A] hover:bg-[#8b542f] disabled:bg-gray-600"
             >
               {t.next} →
             </button>
           </div>
         </div>
       )}
-
-
-
     </div>
   );
 }
