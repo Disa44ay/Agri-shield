@@ -10,6 +10,9 @@ router.post(
   achievementController.createAchievement
 );
 
+// Get all achievements
+router.get("/", achievementController.getAllAchievements);
+
 // Get achievements by email
 router.get("/:email", achievementController.getAchievementsByEmail);
 

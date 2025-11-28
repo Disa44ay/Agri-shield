@@ -15,6 +15,17 @@ exports.createAchievement = async (req, res) => {
   }
 };
 
+// GET all achievements in the collection
+exports.getAllAchievements = async (req, res) => {
+  try {
+    const achievements = await Achievement.find();
+    return res.status(200).json({ achievements });
+  } catch (error) {
+    console.error("Fetch All Achievements Error:", error);
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
 // GET achievements for a user
 exports.getAchievementsByEmail = async (req, res) => {
   try {
