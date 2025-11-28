@@ -60,9 +60,10 @@ export default function Footer() {
             <h3 className="text-lg font-semibold text-[#F4D9A3]">Contact</h3>
 
             <ul className="text-white/70 space-y-2 text-sm">
-              <li>📍 Dhaka, Bangladesh</li>
-              <li>📞 +880 1234-567890</li>
+              <li>📍 Chittagong, Bangladesh</li>
+              <li>📞 +880 1********</li>
               <li>📧 support@agrishield.com</li>
+              <li><Link href="/developers" className="hover:text-[#F4D9A3] font-bold">Meet the Developers</Link></li>
             </ul>
           </motion.div>
 
