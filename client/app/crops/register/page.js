@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/app/LanguageContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function CropRegistrationForm() {
   const { lang } = useLanguage(); 
@@ -62,7 +63,8 @@ export default function CropRegistrationForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-center bg-no-repeat">
+    <ProtectedRoute>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-center bg-no-repeat">
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative backdrop-blur-md bg-white/10 border border-white/30 shadow-xl rounded-3xl p-8 w-full max-w-lg transition-transform duration-300 hover:scale-[1.03]">
@@ -195,5 +197,7 @@ export default function CropRegistrationForm() {
         </form>
       </div>
     </div>
+
+    </ProtectedRoute>
   );
 }

@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/app/LanguageContext";
 import Link from "next/link";
 
+import ProtectedRoute from "@/components/ProtectedRoute";
 // ---- Same Translation Maps ----
 const divisionBn = {
   Dhaka: "ঢাকা",
@@ -168,7 +169,8 @@ export default function FarmerDetails() {
   const displayDistrict = translate(farmer.district, districtBn, lang);
 
   return (
-    <div className="min-h-screen pb-20">
+    <ProtectedRoute>
+        <div className="min-h-screen pb-20">
 
       {/* ---------------- TOP HEADER ---------------- */}
       <div className="flex justify-between items-center max-w-6xl mx-auto px-4 sm:px-6 mt-6 sm:mt-8">
@@ -329,5 +331,7 @@ export default function FarmerDetails() {
 
       </div>
     </div>
+
+    </ProtectedRoute>
   );
 }

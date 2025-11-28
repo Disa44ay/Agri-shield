@@ -10,6 +10,8 @@ import { getFarmersData } from "@/api/farmersDataApi";
 import { getCropsData } from "@/api/cropsDataApi";
 import { getAchievementsData } from "@/api/achievementsDataApi";
 import Link from "next/link";
+import ProtectedRoute from "@/components/ProtectedRoute";
+
 
 export default function Dashboard() {
   /* ---------------- LANGUAGE TEXT ---------------- */
@@ -84,7 +86,8 @@ export default function Dashboard() {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="min-h-screen bg-black/20 px-4 sm:px-6 md:px-10 lg:px-16 py-10 max-w-[1600px] mx-auto">
+    <ProtectedRoute>
+        <div className="min-h-screen bg-black/20 px-4 sm:px-6 md:px-10 lg:px-16 py-10 max-w-[1600px] mx-auto">
 
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
@@ -240,6 +243,7 @@ export default function Dashboard() {
       )}
 
     </div>
+    </ProtectedRoute>
   );
 }
 
