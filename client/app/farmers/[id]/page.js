@@ -9,9 +9,11 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/app/LanguageContext";
 import Link from "next/link";
-
 import ProtectedRoute from "@/components/ProtectedRoute";
-// ---- Same Translation Maps ----
+
+/* ---------------------------------------------
+   BANGLA MAPS
+--------------------------------------------- */
 const divisionBn = {
   Dhaka: "ঢাকা",
   Chattogram: "চট্টগ্রাম",
@@ -141,38 +143,44 @@ const achievementsBn = {
   "Sustainable Farmer": "টেকসই কৃষক",
 };
 
+
 const translate = (value, map, lang) =>
   lang === "bn" ? map[value] || value : value;
 
+/* ---------------------------------------------
+   PAGE
+--------------------------------------------- */
 export default function FarmerDetails() {
   const { id } = useParams();
   const { lang, setLang } = useLanguage();
 
+  // 🔥 FIX EMAIL ENCODING ISSUE
+  const emailParam = decodeURIComponent(id).trim().toLowerCase();
+
   const text = {
     en: {
-      heading: "Farmer Details",
-      crops: "Registered Crops",
-      achievements: "Achievements",
-      harvest: "Harvest Date",
       back: "← Back to Farmers",
       toggle: "বাংলা দেখুন",
-      noCrops: "No crops registered",
+      achievements: "Achievements",
+      crops: "Registered Crops",
       noAchievements: "No achievements yet",
+      noCrops: "No crops registered",
+      harvest: "Harvest Date",
     },
     bn: {
-      heading: "কৃষকের বিস্তারিত",
-      crops: "নিবন্ধিত ফসল",
-      achievements: "অর্জনসমূহ",
-      harvest: "ফসল তোলার তারিখ",
       back: "← কৃষকের তালিকায় ফিরে যান",
       toggle: "See English",
-      noCrops: "কোনো ফসল নিবন্ধিত নেই",
+      achievements: "অর্জনসমূহ",
+      crops: "নিবন্ধিত ফসল",
       noAchievements: "এখনও কোনো অর্জন নেই",
+      noCrops: "কোনো ফসল নিবন্ধিত নেই",
+      harvest: "ফসল তোলার তারিখ",
     },
   };
+
   const t = text[lang];
 
-  // ---- API ----
+  /* FETCH DATA */
   const farmersQuery = useQuery({ queryKey: ["farmers"], queryFn: getFarmersData });
   const achievementsQuery = useQuery({ queryKey: ["achievements"], queryFn: getAchievementsData });
   const cropsQuery = useQuery({ queryKey: ["crops"], queryFn: getCropsData });
@@ -180,183 +188,142 @@ export default function FarmerDetails() {
   if (farmersQuery.isLoading || achievementsQuery.isLoading || cropsQuery.isLoading)
     return <p className="text-center text-white pt-20 text-xl animate-pulse">Loading…</p>;
 
-  const farmer = farmersQuery.data.find((f) => f.id === Number(id));
-  if (!farmer) return <p className="text-center text-white pt-20 text-xl">Farmer not found.</p>;
+  const farmers = farmersQuery.data || [];
 
-  const userAchievements =
-    achievementsQuery.data.find((a) => a.userEmail === farmer.userEmail) || {};
-
-  const userCrops = cropsQuery.data.filter(
-    (c) => c.userEmail === farmer.userEmail
+  // 🔥 MATCH FARMER BY NORMALIZED EMAIL
+  const farmer = farmers.find(
+    (f) => f.email?.trim().toLowerCase() === emailParam
   );
+
+  if (!farmer)
+    return <p className="text-center text-white pt-20 text-xl">Farmer not found.</p>;
+
+  const userEmail = farmer.email;
+
+  // Achievement matching
+  const userAchievements =
+    achievementsQuery.data?.find((a) => a.userEmail === userEmail) || {
+      achievements: [],
+    };
+
+  // Crop matching
+  const userCrops = cropsQuery.data?.filter((c) => c.userEmail === userEmail) || [];
 
   const displayDivision = translate(farmer.division, divisionBn, lang);
   const displayDistrict = translate(farmer.district, districtBn, lang);
 
   return (
     <ProtectedRoute>
-        <div className="min-h-screen pb-20">
+      <div className="min-h-screen pb-20">
 
-      {/* ---------------- TOP HEADER ---------------- */}
-      <div className="flex justify-between items-center max-w-6xl mx-auto px-4 sm:px-6 mt-6 sm:mt-8">
-        <Link
-          href="/farmers"
-          className="text-[#F4D9A3] hover:text-white transition font-semibold text-base sm:text-lg"
-        >
-          {t.back}
-        </Link>
+        {/* Top bar */}
+        <div className="flex justify-between items-center max-w-6xl mx-auto px-6 mt-8">
+          <Link href="/farmers" className="text-[#F4D9A3] hover:text-white font-semibold">
+            {t.back}
+          </Link>
 
-        <button
-          onClick={() => setLang(lang === "bn" ? "en" : "bn")}
-          className="px-4 sm:px-5 py-2 bg-[#A66A3A] text-white font-semibold rounded-xl shadow hover:bg-[#8a542f] text-sm sm:text-base"
-        >
-          {t.toggle}
-        </button>
-      </div>
+          <button
+            onClick={() => setLang(lang === "bn" ? "en" : "bn")}
+            className="px-5 py-2 bg-[#A66A3A] text-white rounded-xl shadow"
+          >
+            {t.toggle}
+          </button>
+        </div>
 
-      {/* ---------------- PROFILE SECTION ---------------- */}
-      <div className="
-        max-w-6xl mx-auto mt-10 sm:mt-12 
-        grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 
-        px-4 sm:px-6
-      ">
+        <div className="max-w-6xl mx-auto mt-12 grid grid-cols-1 lg:grid-cols-3 gap-10 px-6">
 
-        {/* ---------------- LEFT PROFILE CARD ---------------- */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="
-            lg:col-span-1 
-            bg-white/10 backdrop-blur-xl border border-white/20 
-            rounded-3xl shadow-2xl 
-            p-6 sm:p-8 text-center
-          "
-        >
-          {/* Avatar */}
-          <div className="
-            mx-auto rounded-full overflow-hidden shadow-[0_0_25px_rgba(255,255,255,0.3)] 
-            border-4 border-white/20 
-            w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44
-          ">
-            <Image
-              src={farmer.avatar}
-              width={300}
-              height={300}
-              className="object-cover"
-              alt={farmer.name}
-            />
-          </div>
-
-          <h2 className="mt-5 text-2xl sm:text-3xl font-extrabold text-[#F4D9A3]">
-            {lang === "bn" ? farmer.name_bn || farmer.name : farmer.name}
-          </h2>
-
-          <p className="text-white/80 mt-2 text-sm sm:text-lg">
-            📍 {displayDistrict}, {displayDivision}
-          </p>
-
-          <div className="w-full h-px bg-white/20 my-6" />
-
-          {/* Achievements */}
-          <h3 className="text-lg sm:text-xl font-semibold text-[#F4D9A3] mb-4">
-            {t.achievements}
-          </h3>
-
-          {!userAchievements.achievements ||
-          userAchievements.achievements.length === 0 ? (
-            <p className="text-white/60 text-sm sm:text-base">
-              {t.noAchievements}
-            </p>
-          ) : (
-            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-              {userAchievements.achievements.map((a, i) => (
-                <span
-                  key={i}
-                  className="
-                    px-3 py-1 sm:px-4 sm:py-2 
-                    text-xs sm:text-sm 
-                    rounded-full 
-                    bg-yellow-600/30 border border-yellow-300/40 text-yellow-200 shadow
-                  "
-                >
-                  ⭐ {translate(a, achievementsBn, lang)}
-                </span>
-              ))}
+          {/* LEFT CARD */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-white/10 border border-white/20 backdrop-blur-xl rounded-3xl p-8 shadow-2xl text-center"
+          >
+            <div className="mx-auto rounded-full w-40 h-40 overflow-hidden border-4 border-white/30 shadow-lg">
+              <Image
+                src={farmer.avatar || "/images/default-farmer.png"}
+                width={200}
+                height={200}
+                className="object-cover"
+                alt={farmer.name}
+              />
             </div>
-          )}
-        </motion.div>
 
-        {/* ---------------- RIGHT CROPS GRID ---------------- */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="
-            lg:col-span-2 
-            bg-white/10 backdrop-blur-xl border border-white/20 
-            rounded-3xl shadow-2xl 
-            p-6 sm:p-10
-          "
-        >
-          <h3 className="text-xl sm:text-2xl font-bold text-[#F4D9A3] mb-6 sm:mb-8 text-center">
-            {t.crops}
-          </h3>
+            <h2 className="mt-5 text-3xl font-extrabold text-[#F4D9A3]">
+              {lang === "bn" ? farmer.name_bn || farmer.name : farmer.name}
+            </h2>
 
-          {userCrops.length === 0 ? (
-            <p className="text-center text-white/80 text-sm sm:text-lg">
-              {t.noCrops}
+            <p className="text-white/70 mt-2 text-lg">
+              📍 {displayDistrict}, {displayDivision}
             </p>
-          ) : (
-            <div className="
-              grid 
-              grid-cols-1 
-              sm:grid-cols-2 
-              xl:grid-cols-3 
-              gap-6 sm:gap-8
-            ">
-              {userCrops.map((crop) => (
-                <motion.div
-                  key={crop.batchId}
-                  whileHover={{ scale: 1.03 }}
-                  className="
-                    p-5 sm:p-6 
-                    bg-white/10 backdrop-blur-lg 
-                    rounded-2xl border border-white/20 
-                    shadow-lg
-                  "
-                >
-                  <h4 className="text-lg sm:text-xl font-bold text-[#F4D9A3] mb-2">
-                    🌾 {translate(crop.cropName, cropsBn, lang)}
-                  </h4>
 
-                  <p className="text-white/80 text-sm sm:text-base">
-                    🥗 {crop.cropType}
-                  </p>
+            <div className="w-full h-px bg-white/20 my-6" />
 
-                  <p className="text-white/80 text-sm sm:text-base">
-                    ⚖️ {crop.estimatedWeightKg} kg
-                  </p>
+            <h3 className="text-xl font-semibold text-[#F4D9A3] mb-4">
+              {t.achievements}
+            </h3>
 
-                  <p className="text-white/80 text-sm sm:text-base">
-                    🗓 {t.harvest}: {crop.harvestDate}
-                  </p>
+            {userAchievements.achievements.length === 0 ? (
+              <p className="text-white/60">{t.noAchievements}</p>
+            ) : (
+              <div className="flex flex-wrap gap-3 justify-center">
+                {userAchievements.achievements.map((a, i) => (
+                  <span
+                    key={i}
+                    className="px-4 py-2 bg-yellow-600/20 border border-yellow-300/40 text-yellow-200 rounded-full shadow text-sm"
+                  >
+                    ⭐ {translate(a, achievementsBn, lang)}
+                  </span>
+                ))}
+              </div>
+            )}
+          </motion.div>
 
-                  <div className="mt-3 p-3 bg-black/20 rounded-xl">
-                    <p className="text-white/70 text-sm sm:text-base">
-                      📍 {crop.storageDistrict}
+          {/* CROPS */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-10"
+          >
+            <h3 className="text-2xl font-bold text-[#F4D9A3] mb-8 text-center">
+              {t.crops}
+            </h3>
+
+            {userCrops.length === 0 ? (
+              <p className="text-center text-white/70">{t.noCrops}</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                {userCrops.map((crop, i) => (
+                  <motion.div
+                    key={crop._id || `${crop.cropName}-${i}`}
+                    whileHover={{ scale: 1.03 }}
+                    className="p-6 bg-white/10 rounded-2xl border border-white/20 shadow-lg backdrop-blur-lg"
+                  >
+                    <h4 className="text-xl font-bold text-[#F4D9A3] mb-2">
+                      🌾 {translate(crop.cropName, cropsBn, lang)}
+                    </h4>
+
+                    <p className="text-white/80">⚖️ {crop.estimatedWeightKg} kg</p>
+                    <p className="text-white/80">
+                      🗓 {t.harvest}: {crop.harvestDate}
                     </p>
-                    <p className="text-white/70 text-sm sm:text-base">
-                      🏢 {crop.storageWarehouse}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </motion.div>
 
+                    <div className="mt-3 p-3 bg-black/20 rounded-xl">
+                      <p className="text-white/60">
+                        📍 {crop.storage?.district || "Unknown"}
+                      </p>
+                      <p className="text-white/60">
+                        🏢 {crop.storage?.storageName || "No warehouse"}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+
+              </div>
+            )}
+          </motion.div>
+
+        </div>
       </div>
-    </div>
-
     </ProtectedRoute>
   );
 }

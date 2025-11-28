@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 import { auth } from "@/app/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 
 export default function Signup() {
   const { lang } = useLanguage();
@@ -13,226 +13,177 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState("/images/Male-Farmer.svg"); // Default avatar
-  const [division, setDivision] = useState(""); // Division
-  const [district, setDistrict] = useState(""); // District
+  const [avatar, setAvatar] = useState("/images/Male-Farmer.svg");
+  const [division, setDivision] = useState("");
+  const [district, setDistrict] = useState("");
 
-    const divisions = [
-    { id: "dhaka", name: lang === "bn" ? "ঢাকা" : "Dhaka" },
-    { id: "chattogram", name: lang === "bn" ? "চট্টগ্রাম" : "Chattogram" },
-    { id: "rajshahi", name: lang === "bn" ? "রাজশাহী" : "Rajshahi" },
-    { id: "khulna", name: lang === "bn" ? "খুলনা" : "Khulna" },
-    { id: "barishal", name: lang === "bn" ? "বরিশাল" : "Barishal" },
-    { id: "sylhet", name: lang === "bn" ? "সিলেট" : "Sylhet" },
-    { id: "rangpur", name: lang === "bn" ? "রংপুর" : "Rangpur" },
-    { id: "mymensingh", name: lang === "bn" ? "ময়মনসিংহ" : "Mymensingh" },
+  /* Bangladesh Time */
+  const getBdTime = () => {
+    const now = new Date();
+    const bd = new Date(now.getTime() + 6 * 60 * 60 * 1000);
+    return bd.toISOString();
+  };
+
+  const createdAt = getBdTime();
+
+  const divisions = [
+    { id: "Dhaka", name: lang === "bn" ? "ঢাকা" : "Dhaka" },
+    { id: "Chattogram", name: lang === "bn" ? "চট্টগ্রাম" : "Chattogram" },
+    { id: "Rajshahi", name: lang === "bn" ? "রাজশাহী" : "Rajshahi" },
+    { id: "Khulna", name: lang === "bn" ? "খুলনা" : "Khulna" },
+    { id: "Barishal", name: lang === "bn" ? "বরিশাল" : "Barishal" },
+    { id: "Sylhet", name: lang === "bn" ? "সিলেট" : "Sylhet" },
+    { id: "Rangpur", name: lang === "bn" ? "রংপুর" : "Rangpur" },
+    { id: "Mymensingh", name: lang === "bn" ? "ময়মনসিংহ" : "Mymensingh" },
   ];
 
   const districts = {
-    dhaka: [
-      lang === "bn" ? "ঢাকা সিটি" : "Dhaka City",
-      lang === "bn" ? "নারায়ণগঞ্জ" : "Narayanganj",
-      lang === "bn" ? "মুন্সিগঞ্জ" : "Munshiganj",
-      lang === "bn" ? "গাজীপুর" : "Gazipur",
-      lang === "bn" ? "টাঙ্গাইল" : "Tangail"
-    ],
-    chattogram: [
-      lang === "bn" ? "চট্টগ্রাম সিটি" : "Chattogram City",
-      lang === "bn" ? "কক্সবাজার" : "Cox's Bazar",
-      lang === "bn" ? "ফেনী" : "Feni",
-      lang === "bn" ? "কুমিল্লা" : "Comilla",
-      lang === "bn" ? "লক্ষ্মীপুর" : "Lakshmipur"
-    ],
-    rajshahi: [
-      lang === "bn" ? "রাজশাহী সিটি" : "Rajshahi City",
-      lang === "bn" ? "বগুড়া" : "Bogura",
-      lang === "bn" ? "নওগাঁ" : "Naogaon",
-      lang === "bn" ? "পাবনা" : "Pabna",
-      lang === "bn" ? "চাঁপাইনবাবগঞ্জ" : "Chapainawabganj"
-    ],
-    khulna: [
-      lang === "bn" ? "খুলনা সিটি" : "Khulna City",
-      lang === "bn" ? "যশোর" : "Jessore",
-      lang === "bn" ? "সাতক্ষীরা" : "Satkhira",
-      lang === "bn" ? "বাগেরহাট" : "Bagerhat",
-      lang === "bn" ? "কুষ্টিয়া" : "Kushtia"
-    ],
-    barishal: [
-      lang === "bn" ? "বরিশাল সিটি" : "Barishal City",
-      lang === "bn" ? "ভোলা" : "Bhola",
-      lang === "bn" ? "পটুয়াখালী" : "Patuakhali",
-      lang === "bn" ? "ঝালকাঠি" : "Jhalokathi"
-    ],
-    sylhet: [
-      lang === "bn" ? "সিলেট সিটি" : "Sylhet City",
-      lang === "bn" ? "মৌলভীবাজার" : "Moulvibazar",
-      lang === "bn" ? "হবিগঞ্জ" : "Habiganj",
-      lang === "bn" ? "সুনামগঞ্জ" : "Sunamganj"
-    ],
-    rangpur: [
-      lang === "bn" ? "রংপুর সিটি" : "Rangpur City",
-      lang === "bn" ? "দিনাজপুর" : "Dinajpur",
-      lang === "bn" ? "কুড়িগ্রাম" : "Kurigram",
-      lang === "bn" ? "নীলফামারী" : "Nilphamari"
-    ],
-    mymensingh: [
-      lang === "bn" ? "ময়মনসিংহ সিটি" : "Mymensingh City",
-      lang === "bn" ? "জামালপুর" : "Jamalpur",
-      lang === "bn" ? "নেত্রকোণা" : "Netrokona"
-    ],
+    Dhaka: ["Dhaka", "Narayanganj", "Munshiganj", "Gazipur", "Tangail"],
+    Chattogram: ["Chattogram", "Cox’s Bazar", "Feni", "Cumilla", "Laxmipur"],
+    Rajshahi: ["Rajshahi", "Bogura", "Naogaon", "Pabna", "Chapainawabganj"],
+    Khulna: ["Khulna", "Jessore", "Satkhira", "Bagerhat", "Kushtia"],
+    Barishal: ["Barishal", "Bhola", "Patuakhali", "Jhalokathi"],
+    Sylhet: ["Sylhet", "Moulvibazar", "Habiganj", "Sunamganj"],
+    Rangpur: ["Rangpur", "Dinajpur", "Kurigram", "Nilphamari"],
+    Mymensingh: ["Mymensingh", "Jamalpur", "Netrokona"],
   };
 
-  const getBdTime = () => {
-    const now = new Date();
-    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-    const bdTime = new Date(utc + 6 * 3600000); // UTC+6
-    const day = String(bdTime.getDate()).padStart(2, "0");
-    const month = String(bdTime.getMonth() + 1).padStart(2, "0");
-    const year = bdTime.getFullYear();
-    const hours = String(bdTime.getHours()).padStart(2, "0");
-    const minutes = String(bdTime.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes} ${day}/${month}/${year}`;
+  /* ---------------- STORE USER IN MONGODB ---------------- */
+  const saveUserToMongo = async () => {
+    try {
+      const res = await fetch(
+        "https://agri-shield-w53f.onrender.com/api/users/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            name,
+            phone,
+            division,
+            district,
+            picture: avatar,
+            createdAt,
+          }),
+        }
+      );
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.message || "MongoDB save failed");
+      }
+
+      return true;
+    } catch (err) {
+      console.error("MongoDB Save Error:", err);
+      Swal.fire("Error", "Failed to save user to database.", "error");
+      return false;
+    }
   };
 
-  const [createdAt, setCreatedAt] = useState(getBdTime()); // Store createdAt with Bangladesh time
-
-  const handleAvatarChange = (e) => {
-    setAvatar(e.target.value); // Set the avatar from the URL input
-  };
-
+  /* ---------------- HANDLE SUBMIT ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      // 1️⃣ Create Firebase Auth user
       await createUserWithEmailAndPassword(auth, email, password);
 
+      // 2️⃣ Save user to MongoDB
+      const mongoSaved = await saveUserToMongo();
+      if (!mongoSaved) return;
+
+      // 3️⃣ Success Message
       Swal.fire({
         icon: "success",
-        title: lang === "bn" ? "অ্যাকাউন্ট তৈরি হয়েছে!" : "Account created successfully!",
-        text: lang === "bn" ? "অভিনন্দন! আপনার অ্যাকাউন্ট তৈরি হয়েছে।" : "Congratulations! Your account has been created.",
-        confirmButtonText: "OK",
+        title: lang === "bn" ? "অ্যাকাউন্ট তৈরি হয়েছে!" : "Account created!",
+        text: lang === "bn" ? "আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে।" : "Your account has been successfully created.",
         confirmButtonColor: "#8c562e",
       }).then(() => {
-        window.location.href = "/"; // Redirect to landing page after clicking OK
+        window.location.href = "/";
       });
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: lang === "bn" ? "দুঃখিত!" : "Oops!",
-        text: error.message || "Something went wrong. Please try again.",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#8c562e",
+        title: "Error",
+        text: error.message,
       });
     }
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-4" style={{  }}>
-      <div className="backdrop-blur-sm bg-white/5 border border-white/30 shadow-2xl rounded-2xl p-6 sm:p-8 w-full max-w-md transition-transform duration-300 ease-out hover:scale-[1.03]">
-        <h1 className="text-2xl sm:text-3xl font-bold text-center text-white drop-shadow">
+    <div className="min-h-screen w-full flex items-center justify-center px-4">
+      <div className="backdrop-blur-sm bg-white/5 border border-white/30 shadow-xl rounded-2xl p-6 w-full max-w-md">
+
+        <h1 className="text-3xl text-center text-white font-bold">
           {lang === "bn" ? "রেজিস্টার" : "Sign Up"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-          <input
-            type="text"
+
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)}
             placeholder={lang === "bn" ? "পুরো নাম" : "Full Name"}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-3 rounded-md bg-white/40 border border-white/40 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8c562e] placeholder-gray-700"
-            required
-          />
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
+            required />
 
-          <input
-            type="email"
-            placeholder={lang === "bn" ? "ইমেইল ঠিকানা" : "Email Address"}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 rounded-md bg-white/40 border border-white/40 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8c562e] placeholder-gray-700"
-            required
-          />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+            placeholder={lang === "bn" ? "ইমেইল" : "Email"}
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
+            required />
 
-          <input
-            type="tel"
+          <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)}
             placeholder={lang === "bn" ? "ফোন নম্বর" : "Phone Number"}
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full p-3 rounded-md bg-white/40 border border-white/40 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8c562e] placeholder-gray-700"
-            required
-          />
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
+            required />
 
-          <input
-            type="password"
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
             placeholder={lang === "bn" ? "পাসওয়ার্ড" : "Password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 rounded-md bg-white/40 border border-white/40 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8c562e] placeholder-gray-700"
-            required
-          />
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
+            required />
 
-          {/* Division dropdown */}
-          <select
-            value={division}
-            onChange={(e) => setDivision(e.target.value)}
-            className="w-full p-3 rounded-md bg-white/40 border border-white/40 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8c562e]"
-            required
-          >
+          {/* Division */}
+          <select value={division} onChange={(e) => setDivision(e.target.value)}
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black" required>
             <option value="">{lang === "bn" ? "বিভাগ নির্বাচন করুন" : "Select Division"}</option>
-            {divisions.map((div) => (
-              <option key={div.id} value={div.id}>
-                {div.name}
-              </option>
+            {divisions.map((d) => (
+              <option key={d.id} value={d.id}>{d.name}</option>
             ))}
           </select>
 
-          {/* District dropdown */}
-          <select
-            value={district}
-            onChange={(e) => setDistrict(e.target.value)}
-            className="w-full p-3 rounded-md bg-white/40 border border-white/40 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8c562e]"
-            required
-            disabled={!division}
-          >
-            <option value="">{lang === "bn" ? "জেলা নির্বাচন করুন" : "Select District"}</option>
-            {division &&
-              districts[division].map((dist, index) => (
-                <option key={index} value={dist}>
-                  {dist}
-                </option>
-              ))}
+          {/* District */}
+          <select value={district} onChange={(e) => setDistrict(e.target.value)}
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
+            required disabled={!division}>
+            <option value="">Select District</option>
+            {division && districts[division].map((dist) => (
+              <option key={dist} value={dist}>{dist}</option>
+            ))}
           </select>
 
-          {/* Avatar URL input */}
-          <div className="w-full">
-            <label htmlFor="avatar" className="block text-[#ffffffe1]">{lang === "bn" ? "অ্যাভাটার URL দিন" : "Enter Avatar URL"}</label>
-            <input
-              type="text"
-              value={avatar}
-              onChange={handleAvatarChange}
-              placeholder={lang === "bn" ? "অ্যাভাটার URL" : "Avatar URL"}
-              className="w-full p-3 border border-white/40 text-[#ffffffe1] focus:outline-none focus:ring-2 focus:ring-[#8c562e] mt-2"
-            />
-            <div className="mt-2 flex justify-center">
-              <img src={avatar} alt="Avatar" className="w-20 h-20 rounded-full object-cover" />
-            </div>
-          </div>
+          {/* Avatar URL */}
+          <input
+            type="text"
+            value={avatar}
+            onChange={(e) => setAvatar(e.target.value)}
+            placeholder="Avatar URL"
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
+          />
 
-          <button
-            type="submit"
-            className="w-full py-3 bg-[#8c562e] text-white rounded-md shadow-xl hover:bg-[#a66b42] transition"
-          >
+          <button type="submit"
+            className="w-full bg-[#8c562e] text-white p-3 rounded-md">
             {lang === "bn" ? "রেজিস্টার" : "Register"}
           </button>
+
         </form>
 
-        <div className="mt-4 text-center">
-          <p className="text-sm text-white/80">
-            {lang === "bn" ? "আপনার অ্যাকাউন্ট আছে?" : "Already have an account?"}{" "}
-            <a href="/auth/signin" className="text-[#ed9e61] hover:underline">
-              {lang === "bn" ? "এখানে লগ ইন করুন" : "Login here"}
-            </a>
-          </p>
-        </div>
+        <p className="mt-4 text-center text-white">
+          {lang === "bn" ? "অ্যাকাউন্ট আছে?" : "Already have an account?"}
+          <a href="/auth/signin" className="text-orange-300 ml-1">
+            {lang === "bn" ? "লগইন করুন" : "Login"}
+          </a>
+        </p>
+
       </div>
     </div>
   );
