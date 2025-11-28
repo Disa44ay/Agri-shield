@@ -5,6 +5,7 @@ import FarmerAnimation from "@/components/FarmerAnimation";
 import { useLanguage } from "@/app/LanguageContext";
 import LandingSections from "@/components/ProblemSection";
 import dynamic from "next/dynamic";
+import SDGHighlight from "@/components/SDGHighlight";
 
 // Load Top Farmers WITHOUT SSR → prevents hydration mismatch
 const TopFarmersSection = dynamic(
@@ -103,6 +104,7 @@ export default function LandingPage() {
       {/* Client-only sections */}
       <TopFarmersSection />
       <LandingSections />
+      <SDGHighlight></SDGHighlight>
     </main>
   );
 }

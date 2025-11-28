@@ -3,6 +3,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { LanguageProvider } from "@/app/LanguageContext";
+import { Providers } from "@/app/providers";   // ✅ React Query Provider
 import { usePathname } from "next/navigation";
 
 export default function RootLayout({ children }) {
@@ -20,16 +21,19 @@ export default function RootLayout({ children }) {
           backgroundAttachment: "fixed",
         }}
       >
-        <LanguageProvider>
-          {/* Top gradient overlay */}
-          <div className="fixed inset-0 bg-gradient-to-b from-black/90 via-black/20 to-transparent pointer-events-none z-0"></div>
+        {/* React Query + Language Providers */}
+        <Providers>
+          <LanguageProvider>
+            {/* Top gradient overlay */}
+            <div className="fixed inset-0 bg-gradient-to-b from-black/90 via-black/20 to-transparent pointer-events-none z-0"></div>
 
-          {/* Hide navbar on /auth pages */}
-          {!isAuthPage && <Navbar />}
+            {/* Hide navbar on auth pages */}
+            {!isAuthPage && <Navbar />}
 
-          {/* Main content */}
-          <main className="relative z-10 pt-16">{children}</main>
-        </LanguageProvider>
+            {/* Page content */}
+            <main className="relative z-10 pt-16">{children}</main>
+          </LanguageProvider>
+        </Providers>
       </body>
     </html>
   );

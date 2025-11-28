@@ -1,0 +1,372 @@
+[
+  {
+    "id": 1,
+    "name": "Abdul Karim",
+    "division": "Rajshahi",
+    "district": "Rajshahi",
+    "crops": ["Mango", "Wheat"],
+    "harvestDate": "2025-02-20",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 2,
+    "name": "Rahima Begum",
+    "division": "Mymensingh",
+    "district": "Mymensingh",
+    "crops": ["Rice", "Vegetables"],
+    "harvestDate": "2025-03-04",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 3,
+    "name": "Shahin Miah",
+    "division": "Chattogram",
+    "district": "Cumilla",
+    "crops": ["Potato", "Tomato"],
+    "harvestDate": "2025-01-15",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+
+  {
+    "id": 4,
+    "name": "Jamal Uddin",
+    "division": "Dhaka",
+    "district": "Gazipur",
+    "crops": ["Rice", "Jute"],
+    "harvestDate": "2025-03-12",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 5,
+    "name": "Salma Khatun",
+    "division": "Khulna",
+    "district": "Jessore",
+    "crops": ["Vegetables", "Wheat"],
+    "harvestDate": "2025-02-28",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 6,
+    "name": "Harun Rashid",
+    "division": "Sylhet",
+    "district": "Habiganj",
+    "crops": ["Tea", "Rice"],
+    "harvestDate": "2025-01-18",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 7,
+    "name": "Fatema Akhter",
+    "division": "Barishal",
+    "district": "Pirojpur",
+    "crops": ["Chili", "Vegetables"],
+    "harvestDate": "2025-02-05",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 8,
+    "name": "Nurul Amin",
+    "division": "Rangpur",
+    "district": "Dinajpur",
+    "crops": ["Potato", "Maize"],
+    "harvestDate": "2025-01-30",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 9,
+    "name": "Rokeya Sultana",
+    "division": "Rajshahi",
+    "district": "Natore",
+    "crops": ["Rice", "Wheat"],
+    "harvestDate": "2025-03-10",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 10,
+    "name": "Anisur Rahman",
+    "division": "Dhaka",
+    "district": "Manikganj",
+    "crops": ["Jute", "Vegetables"],
+    "harvestDate": "2025-02-21",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 11,
+    "name": "Momena Begum",
+    "division": "Sylhet",
+    "district": "Sylhet",
+    "crops": ["Tea", "Spices"],
+    "harvestDate": "2025-01-25",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 12,
+    "name": "Kamal Hossain",
+    "division": "Chattogram",
+    "district": "Feni",
+    "crops": ["Tomato", "Potato"],
+    "harvestDate": "2025-03-07",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 13,
+    "name": "Shirin Akter",
+    "division": "Mymensingh",
+    "district": "Sherpur",
+    "crops": ["Rice", "Vegetables"],
+    "harvestDate": "2025-02-14",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 14,
+    "name": "Abdul Mannan",
+    "division": "Khulna",
+    "district": "Satkhira",
+    "crops": ["Shrimp", "Vegetables"],
+    "harvestDate": "2025-03-11",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 15,
+    "name": "Jannatul Ferdous",
+    "division": "Rangpur",
+    "district": "Nilphamari",
+    "crops": ["Potato", "Maize"],
+    "harvestDate": "2025-01-19",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 16,
+    "name": "Nazmul Hasan",
+    "division": "Barishal",
+    "district": "Jhalokathi",
+    "crops": ["Rice", "Coconut"],
+    "harvestDate": "2025-02-16",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 17,
+    "name": "Sadia Yasmin",
+    "division": "Rajshahi",
+    "district": "Bogura",
+    "crops": ["Wheat", "Vegetables"],
+    "harvestDate": "2025-01-12",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 18,
+    "name": "Shakhawat Hossain",
+    "division": "Chattogram",
+    "district": "Noakhali",
+    "crops": ["Rice", "Onion"],
+    "harvestDate": "2025-03-18",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 19,
+    "name": "Mahfuza Khatun",
+    "division": "Sylhet",
+    "district": "Moulvibazar",
+    "crops": ["Tea", "Vegetables"],
+    "harvestDate": "2025-02-09",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 20,
+    "name": "Abu Taher",
+    "division": "Dhaka",
+    "district": "Narsingdi",
+    "crops": ["Banana", "Vegetables"],
+    "harvestDate": "2025-01-28",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 21,
+    "name": "Lutfa Begum",
+    "division": "Khulna",
+    "district": "Bagerhat",
+    "crops": ["Rice", "Spices"],
+    "harvestDate": "2025-02-22",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 22,
+    "name": "Faruk Ahmed",
+    "division": "Mymensingh",
+    "district": "Jamalpur",
+    "crops": ["Jute", "Rice"],
+    "harvestDate": "2025-03-06",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 23,
+    "name": "Raisa Parvin",
+    "division": "Rajshahi",
+    "district": "Pabna",
+    "crops": ["Vegetables", "Onion"],
+    "harvestDate": "2025-01-20",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 24,
+    "name": "Mamun Sardar",
+    "division": "Barishal",
+    "district": "Barishal",
+    "crops": ["Rice", "Fish"],
+    "harvestDate": "2025-02-27",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 25,
+    "name": "Samia Noor",
+    "division": "Dhaka",
+    "district": "Kishoreganj",
+    "crops": ["Vegetables", "Spices"],
+    "harvestDate": "2025-03-09",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 26,
+    "name": "Hakim Ali",
+    "division": "Chattogram",
+    "district": "Brahmanbaria",
+    "crops": ["Potato", "Rice"],
+    "harvestDate": "2025-01-23",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 27,
+    "name": "Afsana Akter",
+    "division": "Rangpur",
+    "district": "Gaibandha",
+    "crops": ["Maize", "Vegetables"],
+    "harvestDate": "2025-02-13",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 28,
+    "name": "Bashir Uddin",
+    "division": "Sylhet",
+    "district": "Sunamganj",
+    "crops": ["Rice", "Tea"],
+    "harvestDate": "2025-03-02",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 29,
+    "name": "Nadia Rahman",
+    "division": "Khulna",
+    "district": "Narail",
+    "crops": ["Jute", "Vegetables"],
+    "harvestDate": "2025-01-27",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 30,
+    "name": "Shafiqul Islam",
+    "division": "Rajshahi",
+    "district": "Joypurhat",
+    "crops": ["Wheat", "Rice"],
+    "harvestDate": "2025-02-19",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 31,
+    "name": "Selina Parvin",
+    "division": "Barishal",
+    "district": "Bhola",
+    "crops": ["Coconut", "Vegetables"],
+    "harvestDate": "2025-03-03",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 32,
+    "name": "Rafiqul Alam",
+    "division": "Dhaka",
+    "district": "Gopalganj",
+    "crops": ["Rice", "Banana"],
+    "harvestDate": "2025-01-17",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 33,
+    "name": "Halima Khatun",
+    "division": "Chattogram",
+    "district": "Chandpur",
+    "crops": ["Onion", "Vegetables"],
+    "harvestDate": "2025-02-15",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 34,
+    "name": "Tariqul Hasan",
+    "division": "Rangpur",
+    "district": "Kurigram",
+    "crops": ["Potato", "Rice"],
+    "harvestDate": "2025-03-13",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 35,
+    "name": "Julekha Akter",
+    "division": "Mymensingh",
+    "district": "Netrokona",
+    "crops": ["Rice", "Vegetables"],
+    "harvestDate": "2025-01-24",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 36,
+    "name": "Abdul Halim",
+    "division": "Khulna",
+    "district": "Khulna",
+    "crops": ["Fish", "Rice"],
+    "harvestDate": "2025-02-20",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 37,
+    "name": "Morjina Begum",
+    "division": "Rajshahi",
+    "district": "Sirajganj",
+    "crops": ["Jute", "Vegetables"],
+    "harvestDate": "2025-03-08",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 38,
+    "name": "Imran Hossain",
+    "division": "Chattogram",
+    "district": "Khagrachhari",
+    "crops": ["Banana", "Pineapple"],
+    "harvestDate": "2025-01-29",
+    "avatar": "/images/Male-Farmer.svg"
+  },
+  {
+    "id": 39,
+    "name": "Rokeya Khatun",
+    "division": "Barishal",
+    "district": "Patuakhali",
+    "crops": ["Rice", "Fish"],
+    "harvestDate": "2025-02-11",
+    "avatar": "/images/Female-Farmer.svg"
+  },
+  {
+    "id": 40,
+    "name": "Shakil Ahmed",
+    "division": "Dhaka",
+    "district": "Faridpur",
+    "crops": ["Vegetables", "Onion"],
+    "harvestDate": "2025-03-05",
+    "avatar": "/images/Male-Farmer2.svg"
+  },
+  {
+    "id": 41,
+    "name": "Nasima Yasmin",
+    "division": "Sylhet",
+    "district": "Sylhet",
+    "crops": ["Tea", "Rice"],
+    "harvestDate": "2025-01-21",
+    "avatar": "/images/Female-Farmer.svg"
+  }
+]
