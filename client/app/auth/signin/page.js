@@ -39,7 +39,7 @@ export default function Signin() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-4" style={{ backgroundImage: "url('/your-background.jpg')" }}>
+    <div className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-4" style={{  }}>
       <div className="backdrop-blur-sm bg-white/5 border border-white/30 shadow-2xl rounded-2xl p-6 sm:p-8 w-full max-w-md transition-transform duration-300 ease-out hover:scale-[1.03]">
         <h1 className="text-2xl sm:text-3xl font-bold text-center text-white drop-shadow mb-6">
           {lang === "bn" ? "সাইন ইন" : "Sign In"}
