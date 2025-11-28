@@ -28,7 +28,7 @@ export default function LandingPage() {
       stat3: "12–32% loss across essential crops",
     },
     bn: {
-      title: "থালার আগে নষ্ট হয়ে যাচ্ছে আমাদের খাবার।",
+      title: "থালায় পৌঁছানোর আগে নষ্ট হয়ে যাচ্ছে আমাদের খাবার।",
       heroStrong: "AgriShield ডেটাকে রক্ষা-কবচে পরিণত করে।",
       subtitle:
         "বাংলাদেশে প্রতি বছর লক্ষ লক্ষ টন খাদ্য নষ্ট হয়—গোডাউনে, পরিবহনে, আর মাঠে। AgriShield আগে থেকেই সংকেত দেয়, যাতে কৃষকের ক্ষতি কমে।",

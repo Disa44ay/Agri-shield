@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/app/LanguageContext"; // Import language context
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 // Define the weather fetch function
 const getWeatherData = async (district) => {
   const apiKey = "4e2b41473b83f744ee4afc80dae9aac2"; // OpenWeather API key
@@ -102,7 +102,8 @@ export default function Weather() {
   // Render weather icons based on the condition
 const renderWeatherIcon = (weather) => {
   return (
-    <>
+    <ProtectedRoute>
+      <>
       {weather === "Clear" && (
         <img
           src="/images/sunny.png"
@@ -150,6 +151,8 @@ const renderWeatherIcon = (weather) => {
           />
         )}
     </>
+
+    </ProtectedRoute>
   );
 };
 
