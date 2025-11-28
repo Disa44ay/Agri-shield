@@ -2,17 +2,25 @@
 
 import React, { useState } from "react";
 import { useLanguage } from "@/app/LanguageContext";
+import { auth } from "@/app/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Signin() {
-  const { lang } = useLanguage(); // ← get current language
+  const { lang } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signin Form submitted", { email, password });
-    alert(lang === "bn" ? "সাইন ইন সফল হয়েছে!" : "Sign In Successful!");
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      alert(lang === "bn" ? "সফলভাবে লগইন হয়েছে!" : "Signed in successfully!");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (

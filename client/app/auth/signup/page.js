@@ -2,19 +2,31 @@
 
 import React, { useState } from "react";
 import { useLanguage } from "@/app/LanguageContext";
+import { auth } from "@/app/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function Signup() {
-  const { lang } = useLanguage(); 
+  const { lang } = useLanguage();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted", { name, email, phone, password });
-    alert(lang === "bn" ? "সাইন আপ সফল হয়েছে!" : "Sign Up Successful!");
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      alert(
+        lang === "bn"
+          ? "অ্যাকাউন্ট তৈরি হয়েছে!"
+          : "Account created successfully!"
+      );
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -29,13 +41,13 @@ export default function Signup() {
         hover:scale-[1.03]"
       >
         <h1 className="text-2xl sm:text-3xl font-bold text-center text-white drop-shadow">
-          {lang === "bn" ? "নিবন্ধন করুন" : "Sign Up"}
+          {lang === "bn" ? "রেজিস্টার" : "Sign Up"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <input
             type="text"
-            placeholder={lang === "bn" ? "পূর্ণ নাম" : "Full Name"}
+            placeholder={lang === "bn" ? "পুরো নাম" : "Full Name"}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full p-3 rounded-md bg-white/40 border border-white/40 
@@ -78,7 +90,7 @@ export default function Signup() {
             className="w-full py-3 bg-[#8c562e] text-white rounded-md shadow-xl 
             hover:bg-[#a66b42] transition"
           >
-            {lang === "bn" ? "নিবন্ধন করুন" : "Register"}
+            {lang === "bn" ? "রেজিস্টার" : "Register"}
           </button>
         </form>
       </div>
