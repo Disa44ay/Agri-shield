@@ -5,13 +5,15 @@ import { createContext, useContext, useState, useEffect } from "react";
 const LanguageContext = createContext();
 
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState("en");
+  // Default language = Bangla ("bn")
+  const [lang, setLang] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("lang") || "bn";
+    }
+    return "bn"; // SSR-safe fallback
+  });
 
-  useEffect(() => {
-    const savedLang = localStorage.getItem("lang");
-    if (savedLang) setLang(savedLang);
-  }, []);
-s
+  // Save language when changed
   useEffect(() => {
     localStorage.setItem("lang", lang);
   }, [lang]);
