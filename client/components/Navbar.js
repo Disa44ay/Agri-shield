@@ -7,6 +7,8 @@ import LanguageToggle from "@/components/LanguageToggle";
 import Image from "next/image";
 import { auth } from "@/app/firebase";
 import { useFirebaseUser } from "@/app/useFirebaseUser";
+import { useQuery } from "@tanstack/react-query";
+import { getFarmersData } from "@/api/farmersDataApi";
 
 export default function Navbar() {
   const { lang } = useLanguage();
@@ -14,9 +16,20 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // 🔥 REAL AUTH DATA
+  // Firebase auth user
   const { user, loading } = useFirebaseUser();
-  console.log(user)
+
+  // Fetch MongoDB user list
+  const farmersQuery = useQuery({
+    queryKey: ["farmers"],
+    queryFn: getFarmersData,
+  });
+
+  // Match logged-in user from MongoDB
+  const mongoUser =
+    farmersQuery.data?.find(
+      (f) => f.email === user?.email?.trim().toLowerCase()
+    ) || null;
 
   // Scroll effect
   useEffect(() => {
@@ -58,7 +71,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
 
-        {/* ---------------- LOGO ---------------- */}
+        {/* LOGO */}
         <Link
           href="/"
           className={`text-3xl font-extrabold tracking-tight transition-all ${
@@ -68,7 +81,7 @@ export default function Navbar() {
           Agri<span className="text-[#A66A3A]">Shield</span>
         </Link>
 
-        {/* ---------------- DESKTOP MENU ---------------- */}
+        {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center gap-8">
 
           <Link
@@ -100,7 +113,7 @@ export default function Navbar() {
 
           <LanguageToggle />
 
-          {/* ---------------- AUTH SECTION ---------------- */}
+          {/* AUTH SECTION */}
           {!user ? (
             <Link
               href="/auth/signin"
@@ -119,7 +132,7 @@ export default function Navbar() {
                 className="rounded-full overflow-hidden"
               >
                 <Image
-                  src={user.photoURL || "/images/Male-Farmer.svg"}
+                  src={mongoUser?.avatar || "/images/Male-Farmer.svg"}
                   alt="User"
                   width={42}
                   height={42}
@@ -148,7 +161,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* ---------------- MOBILE BUTTON ---------------- */}
+        {/* MOBILE BUTTON */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className={`lg:hidden text-3xl transition-all ${
@@ -159,7 +172,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* ---------------- MOBILE MENU ---------------- */}
+      {/* MOBILE MENU */}
       {menuOpen && (
         <div
           className={`lg:hidden px-4 pb-5 flex flex-col gap-4 border-t backdrop-blur-md transition-all ${
@@ -168,43 +181,25 @@ export default function Navbar() {
               : "bg-black/40 border-white/10"
           }`}
         >
-          <Link
-            href="/weather"
-            className={`py-1 font-medium ${
-              scrolled ? "text-[#5A381F]" : "text-white"
-            } hover:text-[#A66A3A]`}
-          >
+          <Link href="/weather" className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}>
             {t.weather}
           </Link>
 
-          <Link
-            href="/farmers"
-            className={`py-1 font-medium ${
-              scrolled ? "text-[#5A381F]" : "text-white"
-            } hover:text-[#A66A3A]`}
-          >
+          <Link href="/farmers" className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}>
             {t.farmers}
           </Link>
 
-          <Link
-            href="/crops/register"
-            className={`py-1 font-medium ${
-              scrolled ? "text-[#5A381F]" : "text-white"
-            } hover:text-[#A66A3A]`}
-          >
+          <Link href="/crops/register" className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}>
             {t.registerCrop}
           </Link>
 
           <LanguageToggle />
 
-          {/* MOBILE AUTH VIEW */}
           {!user ? (
             <Link
               href="/auth/signin"
               className={`px-4 py-2 rounded-lg w-fit ${
-                scrolled
-                  ? "bg-[#A66A3A] text-white"
-                  : "bg-white/20 text-white backdrop-blur-sm"
+                scrolled ? "bg-[#A66A3A] text-white" : "bg-white/20 text-white backdrop-blur-sm"
               }`}
             >
               {t.login}
@@ -212,12 +207,13 @@ export default function Navbar() {
           ) : (
             <div className="flex items-center gap-3 mt-4">
               <Image
-                src={user.photoURL || "/images/Male-Farmer.svg"}
+                src={mongoUser?.avatar || "/images/Male-Farmer.svg"}
                 alt="User"
                 width={40}
                 height={40}
                 className="rounded-full border border-white/30"
               />
+
               <Link href="/dashboard" className="text-white font-medium hover:text-[#A66A3A]">
                 {t.dashboard}
               </Link>
