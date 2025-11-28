@@ -5,18 +5,21 @@ import { createContext, useContext, useState, useEffect } from "react";
 const LanguageContext = createContext();
 
 export function LanguageProvider({ children }) {
-  // Default language = Bangla ("bn")
-  const [lang, setLang] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("lang") || "bn";
-    }
-    return "bn"; // SSR-safe fallback
-  });
+  const [lang, setLang] = useState("bn"); // SSR-safe default
+  const [ready, setReady] = useState(false);
 
-  // Save language when changed
   useEffect(() => {
-    localStorage.setItem("lang", lang);
-  }, [lang]);
+    const saved = localStorage.getItem("lang");
+
+    // Fix React warning: defer state updates
+    queueMicrotask(() => {
+      if (saved) setLang(saved);
+      setReady(true);
+    });
+  }, []);
+
+  // Prevent hydration mismatch – render nothing until ready
+  if (!ready) return null;
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>
