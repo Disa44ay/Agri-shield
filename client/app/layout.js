@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { LanguageProvider } from "@/app/LanguageContext";
 import { Providers } from "@/app/providers";   // ✅ React Query Provider
 import { usePathname } from "next/navigation";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
@@ -32,6 +33,8 @@ export default function RootLayout({ children }) {
 
             {/* Page content */}
             <main className="relative z-10 pt-16">{children}</main>
+
+            {!isAuthPage && <Footer></Footer>}
           </LanguageProvider>
         </Providers>
       </body>
