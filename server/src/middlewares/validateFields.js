@@ -1,3 +1,4 @@
+// src/middlewares/validateFields.js
 const { fail } = require("../helpers/responseHelper");
 
 // fields: array of field names that must exist on req.body (non-empty)
@@ -5,7 +6,6 @@ function requireFields(fields) {
   return (req, res, next) => {
     const missing = [];
     fields.forEach((f) => {
-      // treat empty string as missing
       if (
         req.body[f] === undefined ||
         req.body[f] === null ||

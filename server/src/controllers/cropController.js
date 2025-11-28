@@ -1,84 +1,101 @@
 const Crop = require("../models/Crop");
-const { success, fail } = require("../helpers/responseHelper");
 
+// CREATE CROP
 exports.createCrop = async (req, res) => {
   try {
-    const { userEmail } = req.body;
+    const {
+      userEmail,
+      cropName,
+      cropType,
+      batchId,
+      farmerId,
+      estimatedWeightKg,
+      harvestDate,
+      storage,
+      status,
+    } = req.body;
 
-    if (!userEmail)
-      return fail(res, "MISSING_EMAIL", "userEmail is required", null, 400);
+    const crop = await Crop.create({
+      userEmail,
+      cropName,
+      cropType,
+      batchId,
+      farmerId,
+      estimatedWeightKg,
+      harvestDate,
+      storage,
+      status,
+    });
 
-    const crop = await Crop.create(req.body);
-
-    return success(res, "CROP_CREATED", "Crop created successfully", crop, 201);
-  } catch (err) {
-    console.error("createCrop error:", err);
-    return fail(res, "SERVER_ERROR", err.message, null, 500);
+    return res.status(201).json({
+      message: "Crop created successfully",
+      crop,
+    });
+  } catch (error) {
+    console.error("Create Crop Error:", error);
+    return res.status(500).json({ message: "Server error", error });
   }
 };
 
-// Get all crops for a specific user
-exports.getCropsByUser = async (req, res) => {
+// GET CROPS BY EMAIL
+exports.getCropsByEmail = async (req, res) => {
   try {
-    const { email } = req.params;
+    const email = req.params.email;
 
     const crops = await Crop.find({ userEmail: email });
 
-    return success(res, "OK", "User crops fetched", crops);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", err.message, null, 500);
+    return res.status(200).json({ crops });
+  } catch (error) {
+    console.error("Get Crops Error:", error);
+    return res.status(500).json({ message: "Server error", error });
   }
 };
 
-//Get a crop by ID
-exports.getCropById = async (req, res) => {
+// UPDATE CROP
+exports.updateCropByEmail = async (req, res) => {
   try {
-    const crop = await Crop.findById(req.params.id);
+    const { email, batchId } = req.params;
 
-    if (!crop) return fail(res, "NOT_FOUND", "Crop not found", null, 404);
+    const crop = await Crop.findOneAndUpdate(
+      { userEmail: email, batchId: Number(batchId) },
+      req.body,
+      { new: true }
+    );
 
-    return success(res, "OK", "Crop fetched", crop);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", err.message, null, 500);
+    if (!crop) {
+      return res.status(404).json({ message: "Crop not found" });
+    }
+
+    return res.status(200).json({
+      message: "Crop updated",
+      crop,
+    });
+  } catch (error) {
+    console.error("Update Crop Error:", error);
+    return res.status(500).json({ message: "Server error", error });
   }
 };
 
-//Update crop (ID-based)
-exports.updateCrop = async (req, res) => {
+// DELETE CROP
+exports.deleteCropByEmail = async (req, res) => {
   try {
-    const crop = await Crop.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+    const { email, batchId } = req.params;
+
+    const deleted = await Crop.findOneAndDelete({
+      userEmail: email,
+      batchId: Number(batchId),
     });
 
-    if (!crop) return fail(res, "NOT_FOUND", "Crop not found", null, 404);
+    if (!deleted) {
+      return res.status(404).json({ message: "Crop not found" });
+    }
 
-    return success(res, "UPDATED", "Crop updated", crop);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", err.message, null, 500);
+    return res.status(200).json({
+      message: "Crop deleted",
+      deletedCrop: deleted,
+    });
+  } catch (error) {
+    console.error("Delete Crop Error:", error);
+    return res.status(500).json({ message: "Server error", error });
   }
 };
-
-//Delete crop (ID-based)
-exports.deleteCrop = async (req, res) => {
-  try {
-    const crop = await Crop.findByIdAndDelete(req.params.id);
-
-    if (!crop) return fail(res, "NOT_FOUND", "Crop not found", null, 404);
-
-    return success(res, "DELETED", "Crop deleted");
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", err.message, null, 500);
-  }
-};
-
-//Get ALL crops in the system (ADMIN)
-exports.getAllCrops = async (req, res) => {
-  try {
-    const crops = await Crop.find();
-    return success(res, "OK", "All crops fetched", crops);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", err.message, null, 500);
-  }
-};
-
-//

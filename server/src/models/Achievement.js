@@ -2,14 +2,19 @@ const mongoose = require("mongoose");
 
 const achievementSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    level: {
-      type: String,
-      enum: ["novice", "intermediate", "pro"],
-      default: "novice",
+    userEmail: { type: String, required: true },
+
+    // array of strings
+    achievements: {
+      type: [String],
+      required: true,
     },
-    badgeImage: { type: String, default: "" },
+
+    // when achievements were awarded
+    awardedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );

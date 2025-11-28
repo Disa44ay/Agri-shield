@@ -1,124 +1,103 @@
 const User = require("../models/User");
-const { success, fail } = require("../helpers/responseHelper");
 
-// Register new user
-exports.registerUser = async (req, res) => {
+// CREATE OR RETURN USER
+exports.registerOrGetUser = async (req, res) => {
   try {
-    const { userEmail } = req.body;
+    const { email, name, phone, division, picture, homeAddress, district } =
+      req.body;
 
-    if (!userEmail)
-      return fail(res, "MISSING_EMAIL", "userEmail is required", null, 400);
+    let user = await User.findOne({ email });
 
-    const exists = await User.findOne({ userEmail });
-    if (exists)
-      return fail(res, "ALREADY_EXISTS", "User already exists", null, 400);
+    if (!user) {
+      user = await User.create({
+        email,
+        name: name || null,
+        phone: phone || null,
+        division: division || null,
+        picture: picture || null,
+        homeAddress: homeAddress || null,
+        district: district || null,
+      });
 
-    const user = await User.create(req.body);
+      return res.status(201).json({
+        message: "User created",
+        user,
+      });
+    }
 
-    return success(res, "USER_CREATED", "User created successfully", user, 201);
-  } catch (err) {
-    console.error("registerUser error:", err);
-    return fail(res, "SERVER_ERROR", "Server error", err.message, 500);
+    return res.status(200).json({
+      message: "User already exists",
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Get profile by email (frontend provides userEmail)
-exports.getUser = async (req, res) => {
+// GET USER BY EMAIL
+exports.getUserByEmail = async (req, res) => {
   try {
-    const { email } = req.params;
+    const email = req.params.email;
+    const user = await User.findOne({ email });
 
-    const user = await User.findOne({ userEmail: email }).populate(
-      "achievements"
-    );
-    if (!user) return fail(res, "NOT_FOUND", "User not found", null, 404);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    return success(res, "OK", "User fetched", user);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", "Server error", err.message, 500);
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Update profile
-exports.updateUser = async (req, res) => {
-  try {
-    const { email } = req.params;
-
-    const user = await User.findOneAndUpdate({ userEmail: email }, req.body, {
-      new: true,
-    }).populate("achievements");
-
-    if (!user) return fail(res, "NOT_FOUND", "User not found", null, 404);
-
-    return success(res, "UPDATED", "Profile updated", user);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", "Server error", err.message, 500);
-  }
-};
-
-// Delete user
-exports.deleteUser = async (req, res) => {
-  try {
-    const { email } = req.params;
-
-    const user = await User.findOneAndDelete({ userEmail: email });
-    if (!user) return fail(res, "NOT_FOUND", "User not found", null, 404);
-
-    return success(res, "DELETED", "User deleted");
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", "Server error", err.message, 500);
-  }
-};
-
-// Get all users
+// GET ALL USERS
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().populate("achievements");
-    return success(res, "OK", "All users fetched", users);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", "Server error", err.message, 500);
+    const users = await User.find();
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Add an achievement
-exports.addAchievement = async (req, res) => {
+// UPDATE USER BY EMAIL
+exports.updateUserByEmail = async (req, res) => {
   try {
-    const { email } = req.params;
-    const { achievementId } = req.body;
+    const email = req.params.email;
 
-    if (!achievementId)
-      return fail(res, "MISSING_FIELD", "achievementId required", null, 400);
+    const updatedUser = await User.findOneAndUpdate({ email }, req.body, {
+      new: true,
+    });
 
-    const user = await User.findOne({ userEmail: email });
-    if (!user) return fail(res, "NOT_FOUND", "User not found", null, 404);
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
-    if (user.achievements.includes(achievementId))
-      return fail(res, "EXISTS", "Achievement already exists", null, 400);
-
-    user.achievements.push(achievementId);
-    await user.save();
-
-    return success(res, "ADDED", "Achievement added", user);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", "Server error", err.message, 500);
+    res.status(200).json({
+      message: "User updated",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Remove achievement
-exports.removeAchievement = async (req, res) => {
+// DELETE USER BY EMAIL
+exports.deleteUserByEmail = async (req, res) => {
   try {
-    const { email } = req.params;
-    const { achievementId } = req.body;
+    const email = req.params.email;
 
-    const user = await User.findOne({ userEmail: email });
-    if (!user) return fail(res, "NOT_FOUND", "User not found", null, 404);
+    const deleted = await User.findOneAndDelete({ email });
 
-    user.achievements = user.achievements.filter(
-      (id) => id.toString() !== achievementId
-    );
-    await user.save();
+    if (!deleted) return res.status(404).json({ message: "User not found" });
 
-    return success(res, "REMOVED", "Achievement removed", user);
-  } catch (err) {
-    return fail(res, "SERVER_ERROR", "Server error", err.message, 500);
+    res.status(200).json({
+      message: "User deleted successfully",
+      user: deleted,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -1,17 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const cropController = require("../controllers/cropController");
+const { requireFields } = require("../middlewares/validateFields");
 
-// MAIN OPERATIONS
-router.post("/", cropController.createCrop);
-router.get("/", cropController.getAllCrops);
+// Create crop
+router.post(
+  "/",
+  requireFields(["userEmail", "cropName", "estimatedWeightKg", "harvestDate"]),
+  cropController.createCrop
+);
 
-// User-specific fetch
-router.get("/user/:email", cropController.getCropsByUser);
+// Get crops by user email
+router.get("/:email", cropController.getCropsByEmail);
 
-// ID-based CRUD
-router.get("/:id", cropController.getCropById);
-router.put("/:id", cropController.updateCrop);
-router.delete("/:id", cropController.deleteCrop);
+// Update crop
+router.patch("/:email/:batchId", cropController.updateCropByEmail);
+
+// Delete crop
+router.delete("/:email/:batchId", cropController.deleteCropByEmail);
 
 module.exports = router;

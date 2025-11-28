@@ -2,25 +2,15 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    email: { type: String, required: true, unique: true, index: true },
+    email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    phone: { type: String, required: true },
-
-    picture: { type: String, default: "" },
-    district: { type: String, default: "" },
-    homeAddress: { type: String, default: "" },
-
-    achievements: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Achievement",
-      },
-    ],
+    phone: { type: String, default: null },
+    division: { type: String, default: null },
+    picture: { type: String, default: null },
+    homeAddress: { type: String, default: null },
+    district: { type: String, default: null },
   },
   { timestamps: true }
 );
-
-// Ensures MongoDB creates correct unique index on `email`
-userSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model("User", userSchema);
