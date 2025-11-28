@@ -131,7 +131,6 @@ const cropsBn = {
 };
 
 
-// ---------------- UTILITY ----------------
 const translate = (value, map, lang) =>
   lang === "bn" ? map[value] || value : value;
 
@@ -162,19 +161,21 @@ export default function TopFarmersSection() {
   if (farmersQuery.isLoading || cropsQuery.isLoading || achievementsQuery.isLoading)
     return <p className="text-center text-white py-20 text-xl">Loading…</p>;
 
-  const farmers = farmersQuery.data;
-  const crops = cropsQuery.data;
-  const achievements = achievementsQuery.data;
+  const farmers = farmersQuery.data;      // array
+  const crops = cropsQuery.data;          // array
+  const achievements = achievementsQuery.data;  // array
 
   // ---------------- MERGE CROPS + ACHIEVEMENTS ----------------
   const farmersWithData = farmers.map((farmer) => {
+    const farmerEmail = farmer.email?.trim().toLowerCase();
+
     const farmerCrops = crops
-      .filter((c) => c.userEmail === farmer.userEmail)
-      .map((c) => c.cropName);
+      ?.filter((c) => c.userEmail?.trim().toLowerCase() === farmerEmail)
+      ?.map((c) => c.cropName) || [];
 
     const farmerAchievements =
-      achievements.find((a) => a.userEmail === farmer.userEmail)?.achievements ||
-      [];
+      achievements.find((a) => a.userEmail?.trim().toLowerCase() === farmerEmail)
+        ?.achievements || [];
 
     return {
       ...farmer,
@@ -184,19 +185,15 @@ export default function TopFarmersSection() {
     };
   });
 
-  // ---------------- TOP 3 FARMERS ----------------
-  const topFarmers = farmersWithData
+  // ---------------- TOP 3 FARMERS (SORTED BY ACHIEVEMENTS) ----------------
+  const topFarmers = [...farmersWithData]
     .sort((a, b) => b.achievementCount - a.achievementCount)
     .slice(0, 3);
 
   // ---------------- ANIMATIONS ----------------
   const container = {
     hidden: { opacity: 0, y: 40 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, staggerChildren: 0.2 },
-    },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, staggerChildren: 0.2 } },
   };
 
   const cardAnim = {
@@ -205,13 +202,7 @@ export default function TopFarmersSection() {
   };
 
   return (
-    <section
-      className="
-        w-full
-        px-4 sm:px-6 lg:px-8
-        py-16 sm:py-20 lg:py-24
-      "
-    >
+    <section className="w-full px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
         <motion.h2
@@ -219,12 +210,7 @@ export default function TopFarmersSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8 }}
-          className="
-            text-3xl sm:text-4xl lg:text-5xl 
-            font-extrabold 
-            text-center 
-            text-[#F4D9A3]
-          "
+          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-center text-[#F4D9A3]"
         >
           {text[lang].title}
         </motion.h2>
@@ -232,16 +218,9 @@ export default function TopFarmersSection() {
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
+          viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="
-            mt-3 
-            text-center 
-            text-[#FFF7E6] 
-            text-sm sm:text-base md:text-lg 
-            max-w-2xl 
-            mx-auto
-          "
+          className="mt-3 text-center text-[#FFF7E6] text-sm sm:text-base md:text-lg max-w-2xl mx-auto"
         >
           {text[lang].subtitle}
         </motion.p>
@@ -251,47 +230,21 @@ export default function TopFarmersSection() {
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          className="
-            mt-12 sm:mt-14 lg:mt-16 
-            grid 
-            grid-cols-1 
-            sm:grid-cols-2 
-            lg:grid-cols-3 
-            gap-6 sm:gap-8 lg:gap-10
-          "
+          viewport={{ once: true }}
+          className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10"
         >
           {topFarmers.map((f, i) => (
             <motion.div
-              key={i}
+              key={f.email || i}
               variants={cardAnim}
               whileHover={{ scale: 1.05, y: -6 }}
               transition={{ duration: 0.25 }}
-              className="
-                relative 
-                flex flex-col items-center 
-                bg-white/10 
-                backdrop-blur-2xl 
-                border border-white/20 
-                rounded-2xl sm:rounded-3xl 
-                p-6 sm:p-7 lg:p-8 
-                shadow-[0_10px_30px_rgba(0,0,0,0.55)]
-              "
+              className="relative flex flex-col items-center bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 sm:p-7 lg:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.55)]"
             >
               {/* Avatar */}
-              <div
-                className="
-                  w-24 h-24 
-                  sm:w-28 sm:h-28 
-                  md:w-32 md:h-32
-                  rounded-full 
-                  overflow-hidden 
-                  border border-white/30 
-                  shadow-xl
-                "
-              >
+              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden border border-white/30 shadow-xl">
                 <Image
-                  src={f.avatar}
+                  src={f.avatar || "/images/default-farmer.png"}
                   alt={f.name}
                   width={128}
                   height={128}
@@ -300,40 +253,17 @@ export default function TopFarmersSection() {
               </div>
 
               {/* Name */}
-              <h3
-                className="
-                  mt-4 sm:mt-5 
-                  text-xl sm:text-2xl 
-                  font-bold 
-                  text-[#F4D9A3] 
-                  text-center
-                "
-              >
+              <h3 className="mt-4 text-xl sm:text-2xl font-bold text-[#F4D9A3] text-center">
                 {f.name}
               </h3>
 
               {/* Location */}
-              <p
-                className="
-                  mt-1 
-                  text-xs sm:text-sm md:text-base 
-                  text-[#FFF7E6]/90 
-                  text-center
-                "
-              >
-                📍 {translate(f.district, districtBn, lang)},{" "}
-                {translate(f.division, divisionBn, lang)}
+              <p className="mt-1 text-xs sm:text-sm md:text-base text-[#FFF7E6]/90 text-center">
+                📍 {translate(f.district, districtBn, lang)}, {translate(f.division, divisionBn, lang)}
               </p>
 
               {/* Crops */}
-              <p
-                className="
-                  mt-3 
-                  text-xs sm:text-sm md:text-base 
-                  text-[#FFF7E6] 
-                  text-center
-                "
-              >
+              <p className="mt-3 text-xs sm:text-sm md:text-base text-[#FFF7E6] text-center">
                 <span className="font-semibold">{text[lang].crops}:</span>{" "}
                 {f.crops.length
                   ? f.crops.map((c) => translate(c, cropsBn, lang)).join(", ")

@@ -1,19 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/app/LanguageContext";
-import Image from "next/image";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useFirebaseUser } from "@/app/useFirebaseUser";
+import Swal from "sweetalert2";
 
+// APIs
 import { getFarmersData } from "@/api/farmersDataApi";
 import { getCropsData } from "@/api/cropsDataApi";
 import { getAchievementsData } from "@/api/achievementsDataApi";
+import { updateUser } from "@/api/updateUser";
+import { updateCrop } from "@/api/updateCrop";
+import { deleteCrop } from "@/api/deleteCrop";
 
-/* ---------------------- BN TRANSLATION MAPPINGS ---------------------- */
+/* ---------------------- TRANSLATION MAPS ---------------------- */
 const divisionBn = {
   Dhaka: "ঢাকা",
   Chattogram: "চট্টগ্রাম",
@@ -142,241 +146,231 @@ const achievementsBn = {
   "Pest Protector": "পোকামাকড় প্রতিরোধক",
   "Sustainable Farmer": "টেকসই কৃষক",
 };
-/* --------------------------------------------------------------------- */
+
+const tText = {
+  en: {
+    dashboard: "Dashboard",
+    yourCrops: "Your Crops",
+    addCrop: "Add New Crop",
+    editProfile: "Edit Profile",
+    noCrops: "No crops added.",
+    noAchievements: "No achievements.",
+    type: "Type",
+    weight: "Weight",
+    harvest: "Harvest",
+    edit: "Edit",
+    delete: "Delete",
+  },
+  bn: {
+    dashboard: "ড্যাশবোর্ড",
+    yourCrops: "আপনার ফসল",
+    addCrop: "নতুন ফসল যোগ করুন",
+    editProfile: "প্রোফাইল সম্পাদনা",
+    noCrops: "কোনো ফসল যোগ করা হয়নি।",
+    noAchievements: "এখনও কোনো অর্জন নেই।",
+    type: "ধরন",
+    weight: "ওজন",
+    harvest: "ফসল তোলার তারিখ",
+    edit: "সম্পাদনা",
+    delete: "মুছুন",
+  },
+};
 
 export default function Dashboard() {
   const { lang } = useLanguage();
+  const text = tText[lang];
   const { user, loading: authLoading } = useFirebaseUser();
 
-  const t = {
-    en: {
-      dashboard: "Dashboard",
-      editProfile: "Edit Profile",
-      yourCrops: "Your Crops",
-      addCrop: "+ Add New Crop",
-      type: "Type",
-      weight: "Weight",
-      harvest: "Harvest",
-      noAchievements: "No achievements yet.",
-      noCrops: "No crops added yet.",
-      delete: "Delete",
-      edit: "Edit",
-      update: "Update",
-      cancel: "Cancel",
-    },
-    bn: {
-      dashboard: "ড্যাশবোর্ড",
-      editProfile: "প্রোফাইল সম্পাদনা",
-      yourCrops: "আপনার ফসল",
-      addCrop: "+ নতুন ফসল যোগ করুন",
-      type: "ধরন",
-      weight: "ওজন",
-      harvest: "ফসল তোলার তারিখ",
-      noAchievements: "এখনও কোনো অর্জন নেই।",
-      noCrops: "কোনো ফসল যোগ করা হয়নি।",
-      delete: "মুছুন",
-      edit: "সম্পাদনা",
-      update: "আপডেট",
-      cancel: "বাতিল",
-    },
-  }[lang];
+  /* ---------------- HOOKS ---------------- */
+  const farmersQuery = useQuery({ queryKey: ["farmers"], queryFn: getFarmersData });
+  const cropsQuery = useQuery({ queryKey: ["crops"], queryFn: getCropsData });
+  const achievementsQuery = useQuery({ queryKey: ["achievements"], queryFn: getAchievementsData });
 
-  /* ---------------- TRANSLATION HELPERS ---------------- */
-  const translateDivision = (d) =>
-    lang === "bn" ? divisionBn[d] || d : d;
+  if (authLoading) return <p className="text-center text-white pt-20">Loading…</p>;
+  if (!user?.email) return <p className="text-center text-red-400 pt-20">Unauthorized</p>;
 
-  const translateDistrict = (d) =>
-    lang === "bn" ? districtBn[d] || d : d;
+  if (farmersQuery.isLoading || cropsQuery.isLoading || achievementsQuery.isLoading)
+    return <p className="text-center text-white pt-20">Loading…</p>;
 
-  const translateCrop = (c) =>
-    lang === "bn" ? cropsBn[c] || c : c;
+  /* ---------------- USER DATA ---------------- */
+  const email = user.email.trim().toLowerCase();
 
-  const translateAchievement = (a) =>
-    lang === "bn" ? achievementsBn[a] || a : a;
+  const farmers = farmersQuery.data || [];
+  const crops = cropsQuery.data || [];
+  const achievements = achievementsQuery.data || [];
 
-  /* ---------------- ALWAYS RUN HOOKS ---------------- */
-  const farmersQuery = useQuery({
-    queryKey: ["farmers"],
-    queryFn: getFarmersData,
-    enabled: !!user,
-  });
-
-  const cropsQuery = useQuery({
-    queryKey: ["crops"],
-    queryFn: getCropsData,
-    enabled: !!user,
-  });
-
-  const achievementsQuery = useQuery({
-    queryKey: ["achievements"],
-    queryFn: getAchievementsData,
-    enabled: !!user,
-  });
-
-  if (authLoading) {
-    return (
-      <p className="text-center text-white pt-20 text-xl">Loading…</p>
-    );
-  }
-
-  const loggedEmail = "arman@gmail.com";
-
-
-  /* ---------------- FILTER USER DATA ---------------- */
-  const farmer = farmersQuery.data?.find((f) => f.userEmail === loggedEmail);
-  const userCrops =
-    cropsQuery.data?.filter((c) => c.userEmail === loggedEmail) || [];
+  const farmer = farmers.find((f) => f.email === email);
+  const userCrops = crops.filter((c) => c.userEmail === email);
 
   const userAchievements =
-    achievementsQuery.data?.find((a) => a.userEmail === loggedEmail) || {
-      achievements: [],
-    };
+    achievements.find((a) => a.userEmail === email) || { achievements: [] };
 
+  /* ---------------- HANDLERS ---------------- */
+  const handleEditUser = async () => {
+    const { value: newName } = await Swal.fire({
+      title: lang === "bn" ? "নাম পরিবর্তন করুন" : "Edit Name",
+      input: "text",
+      inputValue: farmer?.name || "",
+      showCancelButton: true,
+    });
+
+    if (!newName) return;
+
+    await updateUser(email, { name: newName });
+    farmersQuery.refetch();
+
+    Swal.fire(text.editProfile, "Updated!", "success");
+  };
+
+  const handleEditCrop = async (crop) => {
+    const { value: newWeight } = await Swal.fire({
+      title: lang === "bn" ? "ওজন আপডেট করুন" : "Edit Weight",
+      input: "number",
+      inputValue: crop.estimatedWeightKg,
+      showCancelButton: true,
+    });
+
+    if (!newWeight) return;
+
+    await updateCrop(email, crop.batchId, {
+      estimatedWeightKg: Number(newWeight),
+    });
+
+    cropsQuery.refetch();
+    Swal.fire("Updated!", "", "success");
+  };
+
+  const handleDeleteCrop = async (crop) => {
+    const confirm = await Swal.fire({
+      title: lang === "bn" ? "মুছতে চান?" : "Delete this crop?",
+      icon: "warning",
+      showCancelButton: true,
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    await deleteCrop(email, crop.batchId);
+    cropsQuery.refetch();
+
+    Swal.fire("Deleted!", "", "success");
+  };
+
+  /* ---------------- UI ---------------- */
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-black/20 px-4 sm:px-6 md:px-10 lg:px-16 py-10 max-w-[1600px] mx-auto">
+      <div className="min-h-screen px-8 py-10">
 
-        {/* TITLE */}
-        <h1 className="text-4xl font-bold text-[#F4D9A3] mb-10">
-          {t.dashboard}
-        </h1>
+        <h1 className="text-4xl font-bold text-[#F4D9A3] mb-10">{text.dashboard}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
-          {/* ---------------- PROFILE CARD ---------------- */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="
-              rounded-3xl p-10 backdrop-blur-2xl
-              bg-gradient-to-b from-[#ffffff1a] to-[#ffffff05]
-              border border-white/20 shadow-xl
-            "
-          >
+          {/* PROFILE CARD */}
+          <motion.div className="rounded-3xl p-10 bg-white/10 backdrop-blur-xl border border-white/20">
             <div className="flex flex-col items-center text-center">
 
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-[#F4D9A3]/20 blur-2xl"></div>
+              <Image
+                src={farmer?.avatar || "/images/Male-Farmer.svg"}
+                width={150}
+                height={150}
+                className="rounded-full border-4 border-[#F4D9A3]/40"
+                alt="Avatar"
+              />
 
-                <Image
-                  src={farmer?.avatar || "/images/Male-Farmer.svg"}
-                  width={180}
-                  height={180}
-                  alt="Avatar"
-                  className="relative rounded-full border-4 border-[#F4D9A3]/40"
-                />
-              </div>
-
-              <h2 className="mt-6 text-3xl font-extrabold text-[#F4D9A3]">
+              <h2 className="mt-6 text-3xl font-bold text-[#F4D9A3]">
                 {farmer?.name}
               </h2>
 
-              <p className="text-white/90 mt-1">{farmer?.mobile}</p>
-
-              <p className="text-white/80 text-sm">
-                <span className="text-[#F4D9A3] font-semibold">Division:</span>{" "}
-                {translateDivision(farmer?.division)}
+              <p className="text-white/80">
+                📍 {lang === "bn" ? districtBn[farmer?.district] : farmer?.district},
+                {` `}
+                {lang === "bn" ? divisionBn[farmer?.division] : farmer?.division}
               </p>
 
-              <p className="text-white/80 text-sm">
-                <span className="text-[#F4D9A3] font-semibold">District:</span>{" "}
-                {translateDistrict(farmer?.district)}
-              </p>
-
-              <p className="text-white/50 text-xs mt-1">
-                Joined: {new Date(farmer?.createdAt).toLocaleDateString()}
-              </p>
-
-              <button className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg">
-                {t.editProfile}
+              <button
+                onClick={handleEditUser}
+                className="mt-5 px-6 py-2 bg-blue-600 text-white rounded-lg"
+              >
+                {text.editProfile}
               </button>
+
+              <h3 className="mt-8 text-xl text-[#F4D9A3] font-semibold">Achievements</h3>
+
+              {userAchievements.achievements.length === 0 ? (
+                <p className="text-white/60 mt-2">{text.noAchievements}</p>
+              ) : (
+                <div className="flex flex-wrap gap-3 mt-3">
+                  {userAchievements.achievements.map((a, i) => (
+                    <span key={i} className="px-3 py-1 bg-yellow-600/30 text-yellow-100 rounded-full">
+                      ⭐ {lang === "bn" ? achievementsBn[a] : a}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-
-            <h3 className="mt-10 text-xl text-[#F4D9A3] font-semibold">
-              Achievements
-            </h3>
-
-            {userAchievements.achievements.length === 0 ? (
-              <p className="text-white/60">{t.noAchievements}</p>
-            ) : (
-              <div className="flex flex-wrap gap-3 mt-3">
-                {userAchievements.achievements.map((a, i) => (
-                  <span
-                    key={i}
-                    className="
-                      px-4 py-1 rounded-full bg-yellow-600/30
-                      border border-yellow-300/40 text-yellow-100 text-sm
-                    "
-                  >
-                    ⭐ {translateAchievement(a)}
-                  </span>
-                ))}
-              </div>
-            )}
           </motion.div>
 
-          {/* ---------------- CROPS SECTION ---------------- */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="lg:col-span-2"
-          >
+          {/* CROPS */}
+          <motion.div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-[#F4D9A3]">
-                {t.yourCrops}
-              </h2>
+              <h2 className="text-2xl font-bold text-[#F4D9A3]">{text.yourCrops}</h2>
 
               <Link href="/crops/register">
                 <button className="px-5 py-2 bg-green-600 text-white rounded-lg">
-                  {t.addCrop}
+                  + {text.addCrop}
                 </button>
               </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+
               {userCrops.length === 0 ? (
-                <p className="text-white/70">{t.noCrops}</p>
+                <p className="text-white/70">{text.noCrops}</p>
               ) : (
                 userCrops.map((crop) => (
                   <motion.div
                     key={crop.batchId}
                     whileHover={{ scale: 1.04 }}
-                    className="
-                      p-6 bg-white/10 rounded-2xl
-                      border border-white/20 shadow-md
-                      backdrop-blur-lg
-                    "
+                    className="p-6 bg-white/10 rounded-2xl border border-white/20"
                   >
                     <h3 className="text-xl font-bold text-[#F4D9A3] mb-2">
                       🌾 {crop.cropName}
                     </h3>
 
                     <p className="text-white/80">
-                      {t.type}: {translateCrop(crop.cropType)}
+                      {text.type}:{" "}
+                      {lang === "bn" ? cropTypeBn[crop.cropType] : crop.cropType}
                     </p>
 
                     <p className="text-white/80">
-                      {t.weight}: {crop.estimatedWeightKg} kg
+                      {text.weight}: {crop.estimatedWeightKg} kg
                     </p>
 
                     <p className="text-white/80">
-                      {t.harvest}: {crop.harvestDate}
+                      {text.harvest}: {crop.harvestDate}
                     </p>
 
                     <div className="flex gap-3 mt-4">
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded-lg w-full">
-                        {t.edit}
+                      <button
+                        onClick={() => handleEditCrop(crop)}
+                        className="px-4 py-2 bg-blue-600 w-full text-white rounded"
+                      >
+                        {text.edit}
                       </button>
 
-                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg w-full">
-                        {t.delete}
+                      <button
+                        onClick={() => handleDeleteCrop(crop)}
+                        className="px-4 py-2 bg-red-600 w-full text-white rounded"
+                      >
+                        {text.delete}
                       </button>
                     </div>
                   </motion.div>
                 ))
               )}
+
             </div>
           </motion.div>
+
         </div>
       </div>
     </ProtectedRoute>
