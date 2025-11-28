@@ -107,7 +107,32 @@ const cropsBn = {
   Potato: "আলু",
   Tomato: "টমেটো",
   Tea: "চা",
+
+  // New Bangladeshi Crops
+  Onion: "পেঁয়াজ",
+  Garlic: "রসুন",
+  Ginger: "আদা",
+  Chili: "মরিচ",
+  Sugarcane: "আখ",
+  Mustard: "সরিষা",
+  Lentil: "মসুর ডাল",
+  Chickpea: "ছোলা",
+  Corn: "ভুট্টা",
+  Banana: "কলা",
+  Papaya: "পেপে",
+  Pineapple: "আনারস",
+  Coconut: "নারিকেল",
+  BananaFlower: "মোচা",
+  Eggplant: "বেগুন",
+  Spinach: "পালং শাক",
+  Pumpkin: "কুমড়া",
+  Cucumber: "শসা",
+  Watermelon: "তরমুজ",
+  Sesame: "তিল",
+  Soybean: "সয়াবিন",
+  Turmeric: "হলুদ",
 };
+
 
 const achievementsBn = {
   "First Harvest of the Season": "মৌসুমের প্রথম ফসল সংগ্রহ",
@@ -314,7 +339,7 @@ export default function Dashboard() {
               ) : (
                 userCrops.map((crop) => (
                   <motion.div
-                    key={crop.cropId}
+                    key={crop.batchId}
                     whileHover={{ scale: 1.04 }}
                     className="
                       p-6 bg-white/10 rounded-2xl

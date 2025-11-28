@@ -1,7 +1,7 @@
 [
   {
     "userEmail": "abdul.karim@example.com",
-    "cropId": 1001,
+    "batchId": 1001,
     "cropName": "BR-28 Rice",
     "cropType": "Grain",
     "estimatedWeightKg": 320,
@@ -13,7 +13,7 @@
   },
   {
     "userEmail": "abdul.karim@example.com",
-    "cropId": 1002,
+    "batchId": 1002,
     "cropName": "Mango (Langra)",
     "cropType": "Fruit",
     "estimatedWeightKg": 550,
@@ -25,7 +25,7 @@
   },
   {
     "userEmail": "rahima.begum@example.com",
-    "cropId": 1003,
+    "batchId": 1003,
     "cropName": "Aush Rice",
     "cropType": "Grain",
     "estimatedWeightKg": 410,
@@ -37,7 +37,7 @@
   },
   {
     "userEmail": "rahima.begum@example.com",
-    "cropId": 1004,
+    "batchId": 1004,
     "cropName": "Seasonal Vegetables",
     "cropType": "Vegetable",
     "estimatedWeightKg": 120,
@@ -49,7 +49,7 @@
   },
   {
     "userEmail": "arman@gmail.com",
-    "cropId": 1005,
+    "batchId": 1005,
     "cropName": "Potato (Diamond)",
     "cropType": "Root",
     "estimatedWeightKg": 670,
@@ -61,7 +61,7 @@
   },
   {
     "userEmail": "arman@gmail.com",
-    "cropId": 1006,
+    "batchId": 1006,
     "cropName": "Tomato Hybrid",
     "cropType": "Vegetable",
     "estimatedWeightKg": 95,
@@ -74,7 +74,7 @@
 
   {
     "userEmail": "nazmul.hasan@example.com",
-    "cropId": 1007,
+    "batchId": 1007,
     "cropName": "Wheat",
     "cropType": "Grain",
     "estimatedWeightKg": 450,
@@ -87,7 +87,7 @@
 
   {
     "userEmail": "fatema.khatun@example.com",
-    "cropId": 1008,
+    "batchId": 1008,
     "cropName": "Jute",
     "cropType": "Fiber",
     "estimatedWeightKg": 300,
@@ -100,7 +100,7 @@
 
   {
     "userEmail": "jalal.uddin@example.com",
-    "cropId": 1009,
+    "batchId": 1009,
     "cropName": "Hilsa Fish (River Catch)",
     "cropType": "Fish",
     "estimatedWeightKg": 40,
@@ -113,7 +113,7 @@
 
   {
     "userEmail": "mariam.akter@example.com",
-    "cropId": 1010,
+    "batchId": 1010,
     "cropName": "Tea Leaves",
     "cropType": "Leaf",
     "estimatedWeightKg": 125,
@@ -126,7 +126,7 @@
 
   {
     "userEmail": "shafiqur.rahman@example.com",
-    "cropId": 1011,
+    "batchId": 1011,
     "cropName": "Maize Hybrid",
     "cropType": "Grain",
     "estimatedWeightKg": 380,
@@ -139,7 +139,7 @@
 
   {
     "userEmail": "ayesha.siddika@example.com",
-    "cropId": 1012,
+    "batchId": 1012,
     "cropName": "Rice (BR-22)",
     "cropType": "Grain",
     "estimatedWeightKg": 290,
@@ -152,7 +152,7 @@
 
   {
     "userEmail": "kamrul.islam@example.com",
-    "cropId": 1013,
+    "batchId": 1013,
     "cropName": "Banana (Sabri)",
     "cropType": "Fruit",
     "estimatedWeightKg": 190,
@@ -165,7 +165,7 @@
 
   {
     "userEmail": "rubina.akter@example.com",
-    "cropId": 1014,
+    "batchId": 1014,
     "cropName": "Sunflower Seeds",
     "cropType": "Oilseed",
     "estimatedWeightKg": 210,
@@ -178,7 +178,7 @@
 
   {
     "userEmail": "sohag.miah@example.com",
-    "cropId": 1015,
+    "batchId": 1015,
     "cropName": "Chili Pepper",
     "cropType": "Vegetable",
     "estimatedWeightKg": 85,
@@ -191,7 +191,7 @@
 
   {
     "userEmail": "rokeya.sultana@example.com",
-    "cropId": 1016,
+    "batchId": 1016,
     "cropName": "Mustard Seed",
     "cropType": "Oilseed",
     "estimatedWeightKg": 260,
@@ -204,7 +204,7 @@
 
   {
     "userEmail": "mohammad.ali@example.com",
-    "cropId": 1017,
+    "batchId": 1017,
     "cropName": "Tea Leaves",
     "cropType": "Leaf",
     "estimatedWeightKg": 140,
@@ -217,7 +217,7 @@
 
   {
     "userEmail": "shamima.parvin@example.com",
-    "cropId": 1018,
+    "batchId": 1018,
     "cropName": "Rice (BR-16)",
     "cropType": "Grain",
     "estimatedWeightKg": 310,
@@ -230,7 +230,7 @@
 
   {
     "userEmail": "hafiz.uddin@example.com",
-    "cropId": 1019,
+    "batchId": 1019,
     "cropName": "Sugarcane",
     "cropType": "Stem",
     "estimatedWeightKg": 520,
@@ -243,7 +243,7 @@
 
   {
     "userEmail": "nasima.yasmin@example.com",
-    "cropId": 1020,
+    "batchId": 1020,
     "cropName": "Tea Leaves",
     "cropType": "Leaf",
     "estimatedWeightKg": 160,
@@ -256,7 +256,7 @@
 
   {
     "userEmail": "ariful.haque@example.com",
-    "cropId": 1021,
+    "batchId": 1021,
     "cropName": "Mango (Khirsapati)",
     "cropType": "Fruit",
     "estimatedWeightKg": 600,
@@ -269,7 +269,7 @@
 
   {
     "userEmail": "jinat.jahan@example.com",
-    "cropId": 1022,
+    "batchId": 1022,
     "cropName": "Vegetables Mix",
     "cropType": "Vegetable",
     "estimatedWeightKg": 135,
@@ -282,7 +282,7 @@
 
   {
     "userEmail": "ismail.hossain@example.com",
-    "cropId": 1023,
+    "batchId": 1023,
     "cropName": "Shrimp (Bagda)",
     "cropType": "Fish",
     "estimatedWeightKg": 70,
