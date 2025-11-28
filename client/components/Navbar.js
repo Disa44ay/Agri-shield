@@ -119,7 +119,7 @@ export default function Navbar() {
                 className="rounded-full overflow-hidden"
               >
                 <Image
-                  src={user.photoURL || "/images/default.svg"}
+                  src={user.photoURL || "/images/Male-Farmer.svg"}
                   alt="User"
                   width={42}
                   height={42}
@@ -212,7 +212,7 @@ export default function Navbar() {
           ) : (
             <div className="flex items-center gap-3 mt-4">
               <Image
-                src={user.photoURL || "/images/default.svg"}
+                src={user.photoURL || "/images/Male-Farmer.svg"}
                 alt="User"
                 width={40}
                 height={40}
