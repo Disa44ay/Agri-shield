@@ -10,6 +10,9 @@ router.post(
   cropController.createCrop
 );
 
+// Get all crops in the database
+router.get("/", cropController.getAllCrops);
+
 // Get crops by user email
 router.get("/:email", cropController.getCropsByEmail);
 

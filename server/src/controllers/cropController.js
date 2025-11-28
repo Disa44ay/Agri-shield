@@ -76,6 +76,17 @@ exports.updateCropByEmail = async (req, res) => {
   }
 };
 
+// GET ALL CROPS
+exports.getAllCrops = async (req, res) => {
+  try {
+    const crops = await Crop.find();
+    return res.status(200).json({ crops });
+  } catch (error) {
+    console.error("Get All Crops Error:", error);
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
 // DELETE CROP
 exports.deleteCropByEmail = async (req, res) => {
   try {
