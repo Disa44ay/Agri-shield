@@ -1,0 +1,87 @@
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.9s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.8s ease-out;
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Pulsing circles (for SVG nodes) */
+.pulse-node {
+  animation: pulse-node 1.8s ease-out infinite;
+  transform-origin: center;
+}
+
+@keyframes pulse-node {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.12);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Glowing effect */
+.glow-soft {
+  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.7));
+}
+
+/* Dashed moving line for flow arrows */
+.svg-flow-line {
+  stroke-dasharray: 6;
+  stroke-dashoffset: 0;
+  animation: svg-dash 1.4s linear infinite;
+}
+
+@keyframes svg-dash {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+/* Small delayed fade */
+.fade-delay-1 {
+  opacity: 0;
+  animation: fadeUp 0.9s ease-out 0.2s forwards;
+}
+
+.fade-delay-2 {
+  opacity: 0;
+  animation: fadeUp 0.9s ease-out 0.4s forwards;
+}
+
+.fade-delay-3 {
+  opacity: 0;
+  animation: fadeUp 0.9s ease-out 0.6s forwards;
+}
