@@ -1,13 +1,52 @@
 "use client";
+
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { useLanguage } from "@/app/LanguageContext";
 
 export default function Footer() {
+  const { lang } = useLanguage();
+
+  // ---------------- TEXT TRANSLATION ----------------
+  const text = {
+    en: {
+      about: "Empowering farmers with technology, insights & better market access.",
+      quickLinks: "Quick Links",
+      farmers: "Farmers",
+      registerCrop: "Register Crop",
+      weather: "Weather",
+      dashboard: "Dashboard",
+      contact: "Contact",
+      address: "Chittagong, Bangladesh",
+      phone: "+880 1********",
+      email: "support@agrishield.com",
+      developers: "Meet the Developers",
+      follow: "Follow Us",
+      copyright: "All rights reserved.",
+    },
+
+    bn: {
+      about: "প্রযুক্তি, তথ্য ও উন্নত বাজার সংযোগের মাধ্যমে কৃষকদের ক্ষমতায়ন।",
+      quickLinks: "দ্রুত লিংক",
+      farmers: "কৃষকদের তালিকা",
+      registerCrop: "ফসল নিবন্ধন",
+      weather: "আবহাওয়া",
+      dashboard: "ড্যাশবোর্ড",
+      contact: "যোগাযোগ",
+      address: "চট্টগ্রাম, বাংলাদেশ",
+      phone: "+৮৮০ ১********",
+      email: "support@agrishield.com",
+      developers: "ডেভেলপারদের সাথে পরিচিত হোন",
+      follow: "আমাদের অনুসরণ করুন",
+      copyright: "সর্বস্বত্ব সংরক্ষিত।",
+    }
+  };
+
+  const t = text[lang];
+
   return (
     <footer className="">
-
-      {/* FOOTER WRAPPER */}
       <div
         className="
           w-full 
@@ -20,7 +59,7 @@ export default function Footer() {
       >
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
-          {/* -------------------------------- LOGO -------------------------------- */}
+          {/* LOGO */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -31,49 +70,55 @@ export default function Footer() {
             </h1>
 
             <p className="text-white/70 text-sm leading-6 max-w-xs">
-              Empowering farmers with technology, insights & better market access.
+              {t.about}
             </p>
           </motion.div>
 
-          {/* ------------------------------- QUICK LINKS ------------------------------- */}
+          {/* QUICK LINKS */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <h3 className="text-lg font-semibold text-[#F4D9A3]">Quick Links</h3>
+            <h3 className="text-lg font-semibold text-[#F4D9A3]">
+              {t.quickLinks}
+            </h3>
 
             <ul className="text-white/70 space-y-2">
-              <li><Link href="/farmers" className="hover:text-[#F4D9A3]">Farmers</Link></li>
-              <li><Link href="/crops/register" className="hover:text-[#F4D9A3]">Register Crop</Link></li>
-              <li><Link href="/weather" className="hover:text-[#F4D9A3]">Weather</Link></li>
-              <li><Link href="/dashboard" className="hover:text-[#F4D9A3]">Dashboard</Link></li>
+              <li><Link href="/farmers" className="hover:text-[#F4D9A3]">{t.farmers}</Link></li>
+              <li><Link href="/crops/register" className="hover:text-[#F4D9A3]">{t.registerCrop}</Link></li>
+              <li><Link href="/weather" className="hover:text-[#F4D9A3]">{t.weather}</Link></li>
+              <li><Link href="/dashboard" className="hover:text-[#F4D9A3]">{t.dashboard}</Link></li>
             </ul>
           </motion.div>
 
-          {/* ------------------------------- CONTACT INFO ------------------------------- */}
+          {/* CONTACT */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <h3 className="text-lg font-semibold text-[#F4D9A3]">Contact</h3>
+            <h3 className="text-lg font-semibold text-[#F4D9A3]">{t.contact}</h3>
 
             <ul className="text-white/70 space-y-2 text-sm">
-              <li>📍 Chittagong, Bangladesh</li>
-              <li>📞 +880 1********</li>
-              <li>📧 support@agrishield.com</li>
-              <li><Link href="/developers" className="hover:text-[#F4D9A3] font-bold">Meet the Developers</Link></li>
+              <li>📍 {t.address}</li>
+              <li>📞 {t.phone}</li>
+              <li>📧 {t.email}</li>
+              <li>
+                <Link href="/developers" className="hover:text-[#F4D9A3] font-bold">
+                  {t.developers}
+                </Link>
+              </li>
             </ul>
           </motion.div>
 
-          {/* ------------------------------- SOCIAL MEDIA ------------------------------- */}
+          {/* SOCIAL MEDIA */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <h3 className="text-lg font-semibold text-[#F4D9A3]">Follow Us</h3>
+            <h3 className="text-lg font-semibold text-[#F4D9A3]">{t.follow}</h3>
 
             <div className="flex items-center gap-4 text-xl">
               <FaFacebook className="hover:text-[#F4D9A3] cursor-pointer transition" />
@@ -85,9 +130,9 @@ export default function Footer() {
 
         </div>
 
-        {/* -------------------------------- COPYRIGHT -------------------------------- */}
+        {/* COPYRIGHT */}
         <div className="mt-10 text-center text-white/60 text-sm border-t border-white/10 pt-4">
-          © {new Date().getFullYear()} AgriShield — All rights reserved.
+          © {new Date().getFullYear()} AgriShield — {t.copyright}
         </div>
 
       </div>
