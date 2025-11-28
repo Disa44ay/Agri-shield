@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { getFarmersData } from "@/api/farmersDataApi";
 import { useLanguage } from "@/app/LanguageContext";
+import Link from "next/link";
 
 // -----------------------------------------------------------------------
 //  TRANSLATION TABLES (English → Bangla)
@@ -315,38 +316,38 @@ export default function FarmersPage() {
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {currentFarmers.map((f) => (
-            <motion.div
-              key={f.id}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-lg"
-            >
-              <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/20 shadow-md">
-                <Image src={f.avatar} width={112} height={112} alt={f.name} />
-              </div>
+            <Link key={f.id} href={`/farmers/${f.id}`}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="cursor-pointer bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-lg hover:shadow-xl transition"
+              >
+                <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/20 shadow-md">
+                  <Image src={f.avatar} width={112} height={112} alt={f.name} />
+                </div>
 
-              <h3 className="text-center text-xl font-bold text-[#F4D9A3] mt-3">
-                {lang === "bn" ? f.name_bn || f.name : f.name}
-              </h3>
+                <h3 className="text-center text-xl font-bold text-[#F4D9A3] mt-3">
+                  {lang === "bn" ? f.name_bn || f.name : f.name}
+                </h3>
 
-              <p className="text-center text-white/80 text-sm">
-                📍 {translate(f.district, districtBn)}, {translate(f.division, divisionBn)}
-              </p>
+                <p className="text-center text-white/80 text-sm">
+                  📍 {translate(f.district, districtBn)}, {translate(f.division, divisionBn)}
+                </p>
 
-              <p className="text-center text-white mt-2">
-                🌱 {f.crops.map((c) => translate(c, cropsBn)).join(", ")}
-              </p>
+                <p className="text-center text-white mt-2">
+                  🌱 {f.crops.map((c) => translate(c, cropsBn)).join(", ")}
+                </p>
 
-              <p className="text-center text-white/80 mt-1">
-                🌾 {f.harvestDate}
-              </p>
-            </motion.div>
+                <p className="text-center text-white/80 mt-1">
+                  🌾 {f.harvestDate}
+                </p>
+              </motion.div>
+            </Link>
           ))}
+
         </div>
       </div>
 
       {/* -------------------- PAGINATION -------------------- */}
-      {/* PAGINATION */}
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center mt-12">
           <div
