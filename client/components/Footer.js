@@ -5,7 +5,7 @@ import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="mt-20">
+    <footer className="">
 
       {/* FOOTER WRAPPER */}
       <div
