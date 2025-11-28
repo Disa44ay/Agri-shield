@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 
 export default function CropRegistrationForm() {
-  const { lang } = useLanguage(); // get current language
+  const { lang } = useLanguage(); 
 
   const getBdTime = () => {
     const now = new Date();
