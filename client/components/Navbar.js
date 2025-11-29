@@ -10,11 +10,28 @@ import { useFirebaseUser } from "@/app/useFirebaseUser";
 import { useQuery } from "@tanstack/react-query";
 import { getFarmersData } from "@/api/farmersDataApi";
 
+// Simple toast component
+const Toast = ({ children, onClose }) => {
+  return (
+    <div className="fixed top-20 right-5 z-50 w-96 bg-black/70 text-white p-4 rounded-xl shadow-lg backdrop-blur-md">
+      <button
+        className="absolute top-1 right-2 text-white text-lg font-bold"
+        onClick={onClose}
+      >
+        ×
+      </button>
+      {children}
+    </div>
+  );
+};
+
 export default function Navbar() {
   const { lang } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [cropFeedback, setCropFeedback] = useState([]);
 
   // Firebase auth user
   const { user, loading } = useFirebaseUser();
@@ -44,6 +61,7 @@ export default function Navbar() {
       weather: "Weather",
       farmers: "Farmers",
       registerCrop: "Register Crop",
+      notification: "Notification",
       login: "Login",
       dashboard: "Dashboard",
       logout: "Logout",
@@ -52,6 +70,7 @@ export default function Navbar() {
       weather: "আবহাওয়া",
       farmers: "কৃষক তালিকা",
       registerCrop: "ফসল নিবন্ধন",
+      notification: "নোটিফিকেশন",
       login: "লগইন",
       dashboard: "ড্যাশবোর্ড",
       logout: "লগআউট",
@@ -59,6 +78,43 @@ export default function Navbar() {
   };
 
   const t = text[lang];
+
+  // Fetch Crop Risk Feedback for toast (simulate API call or logic from Weather page)
+  const fetchCropFeedback = async () => {
+    try {
+      const res = await fetch("https://agri-shield-w53f.onrender.com/api/crops");
+      const data = await res.json();
+      const cropsList = data?.crops || data;
+      const userCrops = cropsList.filter(
+        (c) => c.userEmail.toLowerCase() === user?.email?.toLowerCase()
+      );
+
+      // Simple logic for crop feedback based on temperature & rain chance
+      const feedback = userCrops.map((crop) => {
+        // Mock values for example
+        const temp = 30;
+        const rainChance = 50;
+        let riskStatus = "good";
+
+        if (crop.cropType.includes("grain") && (temp > 35 || rainChance > 80)) riskStatus = "bad";
+        else if (crop.cropType.includes("vegetable") && (temp < 15 || temp > 35 || rainChance > 70)) riskStatus = "bad";
+        else if (crop.cropType.includes("fruit") && (temp < 20 || temp > 35 || rainChance > 60)) riskStatus = "bad";
+
+        return lang === "bn"
+          ? riskStatus === "good"
+            ? `<p class="text-green-400 font-semibold">${crop.cropName} এর জন্য আবহাওয়া ভালো আছে।</p>`
+            : `<p class="text-red-400 font-semibold">${crop.cropName} এর জন্য আবহাওয়া অনুকূল নয়, সতর্ক থাকুন।</p>`
+          : riskStatus === "good"
+          ? `<p class="text-green-400 font-semibold">Weather is good for ${crop.cropName}.</p>`
+          : `<p class="text-red-400 font-semibold">Weather is not favorable for ${crop.cropName}, stay alert.</p>`;
+      });
+
+      setCropFeedback(feedback);
+      setShowToast(true);
+    } catch (err) {
+      console.log("Crop feedback fetch error:", err);
+    }
+  };
 
   return (
     <nav
@@ -70,7 +126,6 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-
         {/* LOGO */}
         <Link
           href="/"
@@ -83,7 +138,6 @@ export default function Navbar() {
 
         {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center gap-8">
-
           <Link
             href="/weather"
             className={`font-medium transition-all ${
@@ -110,6 +164,16 @@ export default function Navbar() {
           >
             {t.registerCrop}
           </Link>
+
+          {/* Notification */}
+          <button
+            onClick={fetchCropFeedback}
+            className={`font-medium transition-all ${
+              scrolled ? "text-[#5A381F]" : "text-white"
+            } hover:text-[#A66A3A]`}
+          >
+            {t.notification}
+          </button>
 
           <LanguageToggle />
 
@@ -181,17 +245,33 @@ export default function Navbar() {
               : "bg-black/40 border-white/10"
           }`}
         >
-          <Link href="/weather" className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}>
+          <Link
+            href="/weather"
+            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+          >
             {t.weather}
           </Link>
 
-          <Link href="/farmers" className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}>
+          <Link
+            href="/farmers"
+            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+          >
             {t.farmers}
           </Link>
 
-          <Link href="/crops/register" className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}>
+          <Link
+            href="/crops/register"
+            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+          >
             {t.registerCrop}
           </Link>
+
+          <button
+            onClick={fetchCropFeedback}
+            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+          >
+            {t.notification}
+          </button>
 
           <LanguageToggle />
 
@@ -220,6 +300,15 @@ export default function Navbar() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Toast for Crop Risk Feedback */}
+      {showToast && (
+        <Toast onClose={() => setShowToast(false)}>
+          {cropFeedback.map((fb, i) => (
+            <div key={i} dangerouslySetInnerHTML={{ __html: fb }} className="mb-2" />
+          ))}
+        </Toast>
       )}
     </nav>
   );
