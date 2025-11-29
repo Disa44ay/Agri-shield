@@ -4,6 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import MapComponent from "@/components/MapComponent";
+import VoiceAssistant from "@/components/VoiceAssistant";
+import WeatherWidget from "@/components/WeatherWidget";
+import "leaflet/dist/leaflet.css";
 
 const getWeatherData = async (district) => {
   const apiKey = "4e2b41473b83f744ee4afc80dae9aac2";
@@ -45,6 +49,11 @@ export default function Weather() {
   const [crops, setCrops] = useState([]);
   const { lang } = useLanguage();
 
+  const lat = 23.8103; // ensure this exists
+  const lon = 90.4125; // ensure this exists
+
+  const [weather, setWeather] = useState(null);
+  const [risk, setRisk] = useState(null);
   // Get logged-in user email
   useEffect(() => {
     const auth = getAuth();
@@ -212,7 +221,7 @@ export default function Weather() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-center px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center px-4">
       <div className="w-full max-w-7xl p-8 rounded-2xl">
         <h1 className="text-3xl font-bold text-center text-white mb-8">
           {lang === "bn" ? "আবহাওয়া" : "Weather"} - {district}
@@ -255,14 +264,26 @@ export default function Weather() {
               </h2>
               {weatherData.list[0] && renderAdvisory(weatherData.list[0])}
             </div>
-
-           
           </>
         ) : (
           <div className="text-center text-gray-800">
             Loading weather data...
           </div>
         )}
+      </div>
+
+      <div className="my-12 space-y-6">
+        <div className="flex gap-2 items-center justify-center">
+          <WeatherWidget
+            districtName="Dhaka"
+            lat={lat}
+            lon={lon}
+            onWeatherUpdate={(data) => setWeather(data.weather)}
+            onRiskUpdate={(data) => setRisk(data.risk)}
+          />
+          <VoiceAssistant weather={weather} risk={risk} />
+        </div>
+        <MapComponent lat={lat} lon={lon} risk={risk} />
       </div>
     </div>
   );
