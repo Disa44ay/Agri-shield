@@ -11,7 +11,8 @@ export default function Footer() {
   // ---------------- TEXT TRANSLATION ----------------
   const text = {
     en: {
-      about: "Empowering farmers with technology, insights & better market access.",
+      about:
+        "Empowering farmers with technology, insights & better market access.",
       quickLinks: "Quick Links",
       farmers: "Farmers",
       registerCrop: "Register Crop",
@@ -24,6 +25,7 @@ export default function Footer() {
       developers: "Meet the Developers",
       follow: "Follow Us",
       copyright: "All rights reserved.",
+      blogs: "Blogs",
     },
 
     bn: {
@@ -40,7 +42,8 @@ export default function Footer() {
       developers: "ডেভেলপারদের সাথে পরিচিত হোন",
       follow: "আমাদের অনুসরণ করুন",
       copyright: "সর্বস্বত্ব সংরক্ষিত।",
-    }
+      blogs: "ব্লগসমূহ",
+    },
   };
 
   const t = text[lang];
@@ -58,7 +61,6 @@ export default function Footer() {
         "
       >
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-
           {/* LOGO */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -85,10 +87,31 @@ export default function Footer() {
             </h3>
 
             <ul className="text-white/70 space-y-2">
-              <li><Link href="/farmers" className="hover:text-[#F4D9A3]">{t.farmers}</Link></li>
-              <li><Link href="/crops/register" className="hover:text-[#F4D9A3]">{t.registerCrop}</Link></li>
-              <li><Link href="/weather" className="hover:text-[#F4D9A3]">{t.weather}</Link></li>
-              <li><Link href="/dashboard" className="hover:text-[#F4D9A3]">{t.dashboard}</Link></li>
+              <li>
+                <Link href="/farmers" className="hover:text-[#F4D9A3]">
+                  {t.farmers}
+                </Link>
+              </li>
+              <li>
+                <Link href="/crops/register" className="hover:text-[#F4D9A3]">
+                  {t.registerCrop}
+                </Link>
+              </li>
+              <li>
+                <Link href="/weather" className="hover:text-[#F4D9A3]">
+                  {t.weather}
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard" className="hover:text-[#F4D9A3]">
+                  {t.dashboard}
+                </Link>
+              </li>
+              <li>
+                <Link href="/blogs" className="hover:text-[#F4D9A3]">
+                  {t.blogs}
+                </Link>
+              </li>
             </ul>
           </motion.div>
 
@@ -98,14 +121,19 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <h3 className="text-lg font-semibold text-[#F4D9A3]">{t.contact}</h3>
+            <h3 className="text-lg font-semibold text-[#F4D9A3]">
+              {t.contact}
+            </h3>
 
             <ul className="text-white/70 space-y-2 text-sm">
               <li>📍 {t.address}</li>
               <li>📞 {t.phone}</li>
               <li>📧 {t.email}</li>
               <li>
-                <Link href="/developers" className="hover:text-[#F4D9A3] font-bold">
+                <Link
+                  href="/developers"
+                  className="hover:text-[#F4D9A3] font-bold"
+                >
                   {t.developers}
                 </Link>
               </li>
@@ -127,14 +155,12 @@ export default function Footer() {
               <FaYoutube className="hover:text-[#F4D9A3] cursor-pointer transition" />
             </div>
           </motion.div>
-
         </div>
 
         {/* COPYRIGHT */}
         <div className="mt-10 text-center text-white/60 text-sm border-t border-white/10 pt-4">
           © {new Date().getFullYear()} AgriShield — {t.copyright}
         </div>
-
       </div>
     </footer>
   );
