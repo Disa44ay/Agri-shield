@@ -38,14 +38,38 @@ export default function Signup() {
   ];
 
   const districts = {
-    Dhaka: ["Dhaka", "Narayanganj", "Munshiganj", "Gazipur", "Tangail"],
-    Chattogram: ["Chattogram", "Cox’s Bazar", "Feni", "Cumilla", "Laxmipur"],
-    Rajshahi: ["Rajshahi", "Bogura", "Naogaon", "Pabna", "Chapainawabganj"],
-    Khulna: ["Khulna", "Jessore", "Satkhira", "Bagerhat", "Kushtia"],
-    Barishal: ["Barishal", "Bhola", "Patuakhali", "Jhalokathi"],
-    Sylhet: ["Sylhet", "Moulvibazar", "Habiganj", "Sunamganj"],
-    Rangpur: ["Rangpur", "Dinajpur", "Kurigram", "Nilphamari"],
-    Mymensingh: ["Mymensingh", "Jamalpur", "Netrokona"],
+    Dhaka:
+      lang === "bn"
+        ? ["ঢাকা", "নারায়ণগঞ্জ", "মুন্সিগঞ্জ", "গাজীপুর", "টাঙ্গাইল"]
+        : ["Dhaka", "Narayanganj", "Munshiganj", "Gazipur", "Tangail"],
+    Chattogram:
+      lang === "bn"
+        ? ["চট্টগ্রাম", "কক্সবাজার", "ফেনী", "কুমিল্লা", "লক্ষ্মীপুর"]
+        : ["Chattogram", "Cox’s Bazar", "Feni", "Cumilla", "Laxmipur"],
+    Rajshahi:
+      lang === "bn"
+        ? ["রাজশাহী", "বগুড়া", "নওগাঁ", "পাবনা", "চাঁপাইনবাবগঞ্জ"]
+        : ["Rajshahi", "Bogura", "Naogaon", "Pabna", "Chapainawabganj"],
+    Khulna:
+      lang === "bn"
+        ? ["খুলনা", "যশোর", "সাতক্ষীরা", "বাগেরহাট", "কুষ্টিয়া"]
+        : ["Khulna", "Jessore", "Satkhira", "Bagerhat", "Kushtia"],
+    Barishal:
+      lang === "bn"
+        ? ["বরিশাল", "ভোলা", "পটুয়াখালি", "ঝালকাঠি"]
+        : ["Barishal", "Bhola", "Patuakhali", "Jhalokathi"],
+    Sylhet:
+      lang === "bn"
+        ? ["সিলেট", "মৌলভীবাজার", "হবিগঞ্জ", "সুনামগঞ্জ"]
+        : ["Sylhet", "Moulvibazar", "Habiganj", "Sunamganj"],
+    Rangpur:
+      lang === "bn"
+        ? ["রংপুর", "দিনাজপুর", "কুড়িগ্রাম", "নীলফামারী"]
+        : ["Rangpur", "Dinajpur", "Kurigram", "Nilphamari"],
+    Mymensingh:
+      lang === "bn"
+        ? ["ময়মনসিংহ", "জামালপুর", "নেত্রকোণা"]
+        : ["Mymensingh", "Jamalpur", "Netrokona"],
   };
 
   /* ---------------- STORE USER IN MONGODB ---------------- */
@@ -77,7 +101,15 @@ export default function Signup() {
       return true;
     } catch (err) {
       console.error("MongoDB Save Error:", err);
-      Swal.fire("Error", "Failed to save user to database.", "error");
+      Swal.fire({
+        icon: "error",
+        title: lang === "bn" ? "ত্রুটি!" : "Error",
+        text:
+          lang === "bn"
+            ? "ডাটাবেসে ব্যবহারকারী সংরক্ষণ ব্যর্থ হয়েছে।"
+            : "Failed to save user to database.",
+        confirmButtonColor: "#8c562e",
+      });
       return false;
     }
   };
@@ -98,7 +130,10 @@ export default function Signup() {
       Swal.fire({
         icon: "success",
         title: lang === "bn" ? "অ্যাকাউন্ট তৈরি হয়েছে!" : "Account created!",
-        text: lang === "bn" ? "আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে।" : "Your account has been successfully created.",
+        text:
+          lang === "bn"
+            ? "আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে।"
+            : "Your account has been successfully created.",
         confirmButtonColor: "#8c562e",
       }).then(() => {
         window.location.href = "/";
@@ -106,8 +141,9 @@ export default function Signup() {
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Error",
+        title: lang === "bn" ? "ত্রুটি!" : "Error",
         text: error.message,
+        confirmButtonColor: "#8c562e",
       });
     }
   };
@@ -115,50 +151,84 @@ export default function Signup() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center px-4">
       <div className="backdrop-blur-sm bg-white/5 border border-white/30 shadow-xl rounded-2xl p-6 w-full max-w-md">
-
         <h1 className="text-3xl text-center text-white font-bold">
           {lang === "bn" ? "রেজিস্টার" : "Sign Up"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)}
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder={lang === "bn" ? "পুরো নাম" : "Full Name"}
             className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
-            required />
+            required
+          />
 
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder={lang === "bn" ? "ইমেইল" : "Email"}
             className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
-            required />
+            required
+          />
 
-          <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)}
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             placeholder={lang === "bn" ? "ফোন নম্বর" : "Phone Number"}
             className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
-            required />
+            required
+          />
 
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder={lang === "bn" ? "পাসওয়ার্ড" : "Password"}
             className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
-            required />
+            required
+          />
 
           {/* Division */}
-          <select value={division} onChange={(e) => setDivision(e.target.value)}
-            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black" required>
-            <option value="">{lang === "bn" ? "বিভাগ নির্বাচন করুন" : "Select Division"}</option>
+          <select
+            value={division}
+            onChange={(e) => {
+              setDivision(e.target.value);
+              setDistrict("");
+            }}
+            className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
+            required
+          >
+            <option value="">
+              {lang === "bn" ? "বিভাগ নির্বাচন করুন" : "Select Division"}
+            </option>
             {divisions.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
             ))}
           </select>
 
           {/* District */}
-          <select value={district} onChange={(e) => setDistrict(e.target.value)}
+          <select
+            value={district}
+            onChange={(e) => setDistrict(e.target.value)}
             className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
-            required disabled={!division}>
-            <option value="">Select District</option>
-            {division && districts[division].map((dist) => (
-              <option key={dist} value={dist}>{dist}</option>
-            ))}
+            required
+            disabled={!division}
+          >
+            <option value="">
+              {lang === "bn" ? "জেলা নির্বাচন করুন" : "Select District"}
+            </option>
+            {division &&
+              districts[division].map((dist) => (
+                <option key={dist} value={dist}>
+                  {dist}
+                </option>
+              ))}
           </select>
 
           {/* Avatar URL */}
@@ -166,15 +236,16 @@ export default function Signup() {
             type="text"
             value={avatar}
             onChange={(e) => setAvatar(e.target.value)}
-            placeholder="Avatar URL"
+            placeholder={lang === "bn" ? "অবতার URL" : "Avatar URL"}
             className="w-full p-3 bg-white/40 border border-white/40 rounded-md text-black"
           />
 
-          <button type="submit"
-            className="w-full bg-[#8c562e] text-white p-3 rounded-md">
+          <button
+            type="submit"
+            className="w-full bg-[#8c562e] text-white p-3 rounded-md"
+          >
             {lang === "bn" ? "রেজিস্টার" : "Register"}
           </button>
-
         </form>
 
         <p className="mt-4 text-center text-white">
@@ -183,7 +254,6 @@ export default function Signup() {
             {lang === "bn" ? "লগইন করুন" : "Login"}
           </a>
         </p>
-
       </div>
     </div>
   );
