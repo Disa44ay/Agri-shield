@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <LanguageProvider>
             {/* Top gradient overlay */}
-            <div className="fixed inset-0 bg-gradient-to-b from-black/90 via-black/20 to-transparent pointer-events-none z-0"></div>
+            <div className="fixed inset-0 bg-linear-to-b from-black/90 via-black/20 to-transparent pointer-events-none z-0"></div>
 
             {/* Hide navbar on auth pages */}
             {!isAuthPage && <Navbar />}
