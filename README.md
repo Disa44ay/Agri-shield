@@ -66,24 +66,6 @@ npm install
 
 # or
 
-yarn install
-\`\`\`
-
-3. **Environment Variables:**
-
-Create a \`.env.local\` file in the root and add your Firebase and EmailJS keys:
-
-\`\`\`env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-EMAILJS_SERVICE_ID=your_emailjs_service_id
-EMAILJS_TEMPLATE_ID=your_emailjs_template_id
-EMAILJS_PUBLIC_KEY=your_emailjs_public_key
-\`\`\`
 
 4. **Run the development server:**
 
