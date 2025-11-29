@@ -4,10 +4,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useLanguage } from "@/app/LanguageContext";
-import MapComponent from "@/components/MapComponent";
-import VoiceAssistant from "@/components/VoiceAssistant";
-import WeatherWidget from "@/components/WeatherWidget";
-import "leaflet/dist/leaflet.css";
 
 export default function DevelopersPage() {
   const { lang } = useLanguage();
@@ -120,19 +116,6 @@ export default function DevelopersPage() {
       </div>
 
       {/* WEATHER + VOICE + MAP */}
-      <div className="mt-12 space-y-6">
-        <div className="flex gap-2 items-center justify-center">
-          <WeatherWidget
-            districtName="Dhaka"
-            lat={lat}
-            lon={lon}
-            onWeatherUpdate={(data) => setWeather(data.weather)}
-            onRiskUpdate={(data) => setRisk(data.risk)}
-          />
-          <VoiceAssistant weather={weather} risk={risk} />
-        </div>
-        <MapComponent lat={lat} lon={lon} risk={risk} />
-      </div>
     </main>
   );
 }
