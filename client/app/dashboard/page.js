@@ -112,7 +112,6 @@ const cropsBn = {
   Tomato: "টমেটো",
   Tea: "চা",
 
-  // New Bangladeshi Crops
   Onion: "পেঁয়াজ",
   Garlic: "রসুন",
   Ginger: "আদা",
@@ -137,12 +136,11 @@ const cropsBn = {
   Turmeric: "হলুদ",
 };
 
-
 const achievementsBn = {
   "First Harvest of the Season": "মৌসুমের প্রথম ফসল সংগ্রহ",
   "Saved by a Brink": "শেষ মুহূর্তে ফসল রক্ষা",
   "Healthy Growth Guardian": "সুস্থ ফসল বৃদ্ধির অভিভাবক",
-  "Bronze": "ব্রোঞ্জ পুরস্কার",
+  Bronze: "ব্রোঞ্জ পুরস্কার",
   "Pest Protector": "পোকামাকড় প্রতিরোধক",
   "Sustainable Farmer": "টেকসই কৃষক",
 };
@@ -182,14 +180,26 @@ export default function Dashboard() {
   const { user, loading: authLoading } = useFirebaseUser();
 
   /* ---------------- HOOKS ---------------- */
-  const farmersQuery = useQuery({ queryKey: ["farmers"], queryFn: getFarmersData });
+  const farmersQuery = useQuery({
+    queryKey: ["farmers"],
+    queryFn: getFarmersData,
+  });
   const cropsQuery = useQuery({ queryKey: ["crops"], queryFn: getCropsData });
-  const achievementsQuery = useQuery({ queryKey: ["achievements"], queryFn: getAchievementsData });
+  const achievementsQuery = useQuery({
+    queryKey: ["achievements"],
+    queryFn: getAchievementsData,
+  });
 
-  if (authLoading) return <p className="text-center text-white pt-20">Loading…</p>;
-  if (!user?.email) return <p className="text-center text-red-400 pt-20">Unauthorized</p>;
+  if (authLoading)
+    return <p className="text-center text-white pt-20">Loading…</p>;
+  if (!user?.email)
+    return <p className="text-center text-red-400 pt-20">Unauthorized</p>;
 
-  if (farmersQuery.isLoading || cropsQuery.isLoading || achievementsQuery.isLoading)
+  if (
+    farmersQuery.isLoading ||
+    cropsQuery.isLoading ||
+    achievementsQuery.isLoading
+  )
     return <p className="text-center text-white pt-20">Loading…</p>;
 
   /* ---------------- USER DATA ---------------- */
@@ -202,49 +212,91 @@ export default function Dashboard() {
   const farmer = farmers.find((f) => f.email === email);
   const userCrops = crops.filter((c) => c.userEmail === email);
 
-  const userAchievements =
-    achievements.find((a) => a.userEmail === email) || { achievements: [] };
-
-  /* ---------------- HANDLERS ---------------- */
-  const handleEditUser = async () => {
-    const { value: newName } = await Swal.fire({
-      title: lang === "bn" ? "নাম পরিবর্তন করুন" : "Edit Name",
-      input: "text",
-      inputValue: farmer?.name || "",
-      showCancelButton: true,
-    });
-
-    if (!newName) return;
-
-    await updateUser(email, { name: newName });
-    farmersQuery.refetch();
-
-    Swal.fire(text.editProfile, "Updated!", "success");
+  const userAchievements = achievements.find((a) => a.userEmail === email) || {
+    achievements: [],
   };
 
-  const handleEditCrop = async (crop) => {
-    const { value: newWeight } = await Swal.fire({
-      title: lang === "bn" ? "ওজন আপডেট করুন" : "Edit Weight",
-      input: "number",
-      inputValue: crop.estimatedWeightKg,
+  /* ------------------------- EDIT USER ------------------------- */
+  const handleEditUser = async () => {
+    const htmlForm = `
+      <input id="name" class="swal2-input" placeholder="Name" value="${
+        farmer?.name || ""
+      }">
+      <input id="phone" class="swal2-input" placeholder="Phone" value="${
+        farmer?.phone || ""
+      }">
+      <input id="district" class="swal2-input" placeholder="District" value="${
+        farmer?.district || ""
+      }">
+      <input id="division" class="swal2-input" placeholder="Division" value="${
+        farmer?.division || ""
+      }">
+    `;
+
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Profile",
+      html: htmlForm,
+      focusConfirm: false,
       showCancelButton: true,
+      confirmButtonColor: "#F4D9A3",
+      cancelButtonColor: "#222",
+      preConfirm: () => {
+        return {
+          name: document.getElementById("name").value,
+          phone: document.getElementById("phone").value,
+          district: document.getElementById("district").value,
+          division: document.getElementById("division").value,
+        };
+      },
     });
 
-    if (!newWeight) return;
+    if (!formValues) return;
 
-    await updateCrop(email, crop.batchId, {
-      estimatedWeightKg: Number(newWeight),
+    await updateUser(email, formValues);
+    farmersQuery.refetch();
+    Swal.fire("Updated!", "", "success");
+  };
+
+  /* ------------------------- EDIT CROP ------------------------- */
+  const handleEditCrop = async (crop) => {
+    const htmlForm = `
+      <input id="cropName" class="swal2-input" placeholder="Crop Name" value="${crop.cropName}">
+      <input id="cropType" class="swal2-input" placeholder="Crop Type" value="${crop.cropType}">
+      <input id="weight" class="swal2-input" type="number" placeholder="Weight (kg)" value="${crop.estimatedWeightKg}">
+      <input id="harvestDate" class="swal2-input" placeholder="Harvest Date" value="${crop.harvestDate}">
+    `;
+
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Crop",
+      html: htmlForm,
+      showCancelButton: true,
+      confirmButtonColor: "#F4D9A3",
+      cancelButtonColor: "#222",
+      preConfirm: () => {
+        return {
+          cropName: document.getElementById("cropName").value,
+          cropType: document.getElementById("cropType").value,
+          estimatedWeightKg: Number(document.getElementById("weight").value),
+          harvestDate: document.getElementById("harvestDate").value,
+        };
+      },
     });
 
+    if (!formValues) return;
+
+    await updateCrop(email, crop.batchId, formValues);
     cropsQuery.refetch();
     Swal.fire("Updated!", "", "success");
   };
 
+  /* ------------------------- DELETE CROP ------------------------- */
   const handleDeleteCrop = async (crop) => {
     const confirm = await Swal.fire({
-      title: lang === "bn" ? "মুছতে চান?" : "Delete this crop?",
+      title: "Delete this crop?",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonColor: "#F4D9A3",
+      cancelButtonColor: "#222",
     });
 
     if (!confirm.isConfirmed) return;
@@ -258,87 +310,114 @@ export default function Dashboard() {
   /* ---------------- UI ---------------- */
   return (
     <ProtectedRoute>
-      <div className="min-h-screen px-8 py-10">
+      <div className="min-h-screen w-full px-4 sm:px-6 lg:px-10 py-10">
+        {/* HEADER */}
+        <h1 className="text-3xl md:text-4xl font-extrabold text-[#F4D9A3] mb-10 drop-shadow-lg">
+          {text.dashboard}
+        </h1>
 
-        <h1 className="text-4xl font-bold text-[#F4D9A3] mb-10">{text.dashboard}</h1>
-
+        {/* GRID LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* ===================== PROFILE CARD ===================== */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-3xl p-8 md:p-10 
+                     bg-black/30 backdrop-blur-2xl 
+                     border border-white/20 shadow-2xl
+                     flex flex-col items-center text-center
+                     transition-all"
+          >
+            <Image
+              src={farmer?.avatar || "/images/Male-Farmer.svg"}
+              width={150}
+              height={150}
+              alt="Avatar"
+              className="rounded-full border-4 border-[#F4D9A3]/50 shadow-xl"
+            />
 
-          {/* PROFILE CARD */}
-          <motion.div className="rounded-3xl p-10 bg-white/10 backdrop-blur-xl border border-white/20">
-            <div className="flex flex-col items-center text-center">
+            <h2 className="mt-6 text-2xl md:text-3xl font-bold text-[#F4D9A3] drop-shadow">
+              {farmer?.name}
+            </h2>
 
-              <Image
-                src={farmer?.avatar || "/images/Male-Farmer.svg"}
-                width={150}
-                height={150}
-                className="rounded-full border-4 border-[#F4D9A3]/40"
-                alt="Avatar"
-              />
+            <p className="text-white/80 text-sm md:text-base mt-1">
+              📍{" "}
+              {lang === "bn" ? districtBn[farmer?.district] : farmer?.district},{" "}
+              {lang === "bn" ? divisionBn[farmer?.division] : farmer?.division}
+            </p>
 
-              <h2 className="mt-6 text-3xl font-bold text-[#F4D9A3]">
-                {farmer?.name}
-              </h2>
+            <p className="text-white/80 text-sm md:text-base mt-1">
+              📞 {farmer?.phone}
+            </p>
 
-              <p className="text-white/80">
-                📍 {lang === "bn" ? districtBn[farmer?.district] : farmer?.district},
-                {` `}
-                {lang === "bn" ? divisionBn[farmer?.division] : farmer?.division}
+            <button
+              onClick={handleEditUser}
+              className="mt-5 px-6 py-2 
+                bg-[#F4D9A3] text-black font-semibold
+                hover:bg-[#e3c88f] 
+                rounded-lg shadow-md w-full md:w-auto"
+            >
+              {text.editProfile}
+            </button>
+
+            {/* Achievements */}
+            <h3 className="mt-8 text-xl font-semibold text-[#F4D9A3]">
+              Achievements
+            </h3>
+
+            {userAchievements.achievements.length === 0 ? (
+              <p className="text-white/60 mt-2 text-sm">
+                {text.noAchievements}
               </p>
-
-              <button
-                onClick={handleEditUser}
-                className="mt-5 px-6 py-2 bg-blue-600 text-white rounded-lg"
-              >
-                {text.editProfile}
-              </button>
-
-              <h3 className="mt-8 text-xl text-[#F4D9A3] font-semibold">Achievements</h3>
-
-              {userAchievements.achievements.length === 0 ? (
-                <p className="text-white/60 mt-2">{text.noAchievements}</p>
-              ) : (
-                <div className="flex flex-wrap gap-3 mt-3">
-                  {userAchievements.achievements.map((a, i) => (
-                    <span key={i} className="px-3 py-1 bg-yellow-600/30 text-yellow-100 rounded-full">
-                      ⭐ {lang === "bn" ? achievementsBn[a] : a}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
+            ) : (
+              <div className="flex flex-wrap gap-3 mt-4 justify-center">
+                {userAchievements.achievements.map((a, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 bg-yellow-600/40 
+                             text-yellow-100 rounded-full shadow-sm"
+                  >
+                    ⭐ {lang === "bn" ? achievementsBn[a] : a}
+                  </span>
+                ))}
+              </div>
+            )}
           </motion.div>
 
-          {/* CROPS */}
+          {/* ===================== CROPS SECTION ===================== */}
           <motion.div className="lg:col-span-2">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-[#F4D9A3]">{text.yourCrops}</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <h2 className="text-2xl font-bold text-[#F4D9A3]">
+                {text.yourCrops}
+              </h2>
 
               <Link href="/crops/register">
-                <button className="px-5 py-2 bg-green-600 text-white rounded-lg">
+                <button
+                  className="px-5 py-2 bg-green-600 hover:bg-green-700 
+                                 text-white rounded-lg shadow-md"
+                >
                   + {text.addCrop}
                 </button>
               </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-
               {userCrops.length === 0 ? (
-                <p className="text-white/70">{text.noCrops}</p>
+                <p className="text-white/70 text-lg">{text.noCrops}</p>
               ) : (
                 userCrops.map((crop) => (
                   <motion.div
                     key={crop.batchId}
                     whileHover={{ scale: 1.04 }}
-                    className="p-6 bg-white/10 rounded-2xl border border-white/20"
+                    className="p-6 bg-black/30 rounded-2xl border border-white/20 
+                             backdrop-blur-xl shadow-xl transition-all"
                   >
                     <h3 className="text-xl font-bold text-[#F4D9A3] mb-2">
                       🌾 {crop.cropName}
                     </h3>
 
                     <p className="text-white/80">
-                      {text.type}:{" "}
-                      {lang === "bn" ? cropTypeBn[crop.cropType] : crop.cropType}
+                      {text.type}: {crop.cropType}
                     </p>
 
                     <p className="text-white/80">
@@ -352,14 +431,19 @@ export default function Dashboard() {
                     <div className="flex gap-3 mt-4">
                       <button
                         onClick={() => handleEditCrop(crop)}
-                        className="px-4 py-2 bg-blue-600 w-full text-white rounded"
+                        className="px-4 py-2 
+                            bg-[#F4D9A3] text-black font-semibold 
+                            hover:bg-[#e3c88f]
+                            w-full rounded shadow"
                       >
                         {text.edit}
                       </button>
 
                       <button
                         onClick={() => handleDeleteCrop(crop)}
-                        className="px-4 py-2 bg-red-600 w-full text-white rounded"
+                        className="px-4 py-2 
+                            bg-red-700 hover:bg-red-800 
+                            w-full text-white rounded shadow"
                       >
                         {text.delete}
                       </button>
@@ -367,10 +451,8 @@ export default function Dashboard() {
                   </motion.div>
                 ))
               )}
-
             </div>
           </motion.div>
-
         </div>
       </div>
     </ProtectedRoute>
