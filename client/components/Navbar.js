@@ -14,7 +14,7 @@ import emailjs from "@emailjs/browser";
 // Simple toast component
 const Toast = ({ children, onClose }) => {
   return (
-    <div className="fixed top-20 right-5 z-50 w-96 bg-black/70 text-white p-4 rounded-xl shadow-lg backdrop-blur-md">
+    <div className="fixed top-20 right-5 z-50 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl bg-black/70 text-white p-4 rounded-xl shadow-lg backdrop-blur-md">
       <button
         className="absolute top-1 right-2 text-white text-lg font-bold"
         onClick={onClose}
@@ -80,7 +80,7 @@ export default function Navbar() {
 
   const t = text[lang];
 
-  // Fetch Crop Risk Feedback for toast 
+  // Fetch Crop Risk Feedback for toast
   const fetchCropFeedback = async () => {
     if (!user?.email) return;
 
@@ -126,23 +126,22 @@ export default function Navbar() {
       setShowToast(true);
 
       // ---------------- SEND EMAIL VIA EMAILJS ----------------
-   const messageContent = feedback
-  .map(fb => fb.replace(/<[^>]+>/g, ""))
-  .join("\n");
+      const messageContent = feedback
+        .map((fb) => fb.replace(/<[^>]+>/g, ""))
+        .join("\n");
 
-await emailjs.send(
-  "service_2gu42c7",      
-  "template_lm88rms",     
-  {
-    name: mongoUser?.name || "Farmer",
-    time: new Date().toLocaleString(),
-    message: messageContent,
-    to_email: user.email
-  },
-  "Gt8sMkrzyk0go93fx"    
-);
+      await emailjs.send(
+        "service_2gu42c7",
+        "template_lm88rms",
+        {
+          name: mongoUser?.name || "Farmer",
+          time: new Date().toLocaleString(),
+          message: messageContent,
+          to_email: user.email,
+        },
+        "Gt8sMkrzyk0go93fx"
+      );
 
-console.log(to_email);
       console.log("Notification email sent successfully!");
     } catch (err) {
       console.log("Crop feedback fetch or email error:", err);
@@ -158,11 +157,11 @@ console.log(to_email);
           : "bg-transparent border-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 py-3">
         {/* LOGO */}
         <Link
           href="/"
-          className={`text-3xl font-extrabold tracking-tight transition-all ${
+          className={`text-2xl sm:text-3xl font-extrabold tracking-tight transition-all ${
             scrolled ? "text-[#5A381F]" : "text-white"
           }`}
         >
@@ -170,7 +169,7 @@ console.log(to_email);
         </Link>
 
         {/* DESKTOP MENU */}
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6 lg:gap-8">
           <Link
             href="/weather"
             className={`font-medium transition-all ${
@@ -193,12 +192,11 @@ console.log(to_email);
             href="/crops/register"
             className={`font-medium transition-all ${
               scrolled ? "text-[#5A381F]" : "text-white"
-            } hover:text-[#A66A3A]`}
+            } hover:text-[#A66A3A"}`}
           >
             {t.registerCrop}
           </Link>
 
-          {/* Notification */}
           <button
             onClick={fetchCropFeedback}
             className={`font-medium transition-all ${
@@ -210,11 +208,10 @@ console.log(to_email);
 
           <LanguageToggle />
 
-          {/* AUTH SECTION */}
           {!user ? (
             <Link
               href="/auth/signin"
-              className={`px-4 py-2 rounded-lg font-semibold transition-all shadow-sm ${
+              className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all shadow-sm ${
                 scrolled
                   ? "bg-[#A66A3A] text-white hover:bg-[#8c562e]"
                   : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"
@@ -261,7 +258,7 @@ console.log(to_email);
         {/* MOBILE BUTTON */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className={`lg:hidden text-3xl transition-all ${
+          className={`lg:hidden text-2xl sm:text-3xl transition-all ${
             scrolled ? "text-[#5A381F]" : "text-white"
           }`}
         >
@@ -272,7 +269,7 @@ console.log(to_email);
       {/* MOBILE MENU */}
       {menuOpen && (
         <div
-          className={`lg:hidden px-4 pb-5 flex flex-col gap-4 border-t backdrop-blur-md transition-all ${
+          className={`lg:hidden px-4 sm:px-6 md:px-8 pb-5 flex flex-col gap-3 sm:gap-4 border-t backdrop-blur-md transition-all ${
             scrolled
               ? "bg-[#F7EEDC]/95 border-[#E2C9A6]"
               : "bg-black/40 border-white/10"
@@ -280,7 +277,7 @@ console.log(to_email);
         >
           <Link
             href="/weather"
-            className={`py-1 font-medium ${
+            className={`w-full text-left py-2 font-medium ${
               scrolled ? "text-[#5A381F]" : "text-white"
             }`}
           >
@@ -289,7 +286,7 @@ console.log(to_email);
 
           <Link
             href="/farmers"
-            className={`py-1 font-medium ${
+            className={`w-full text-left py-2 font-medium ${
               scrolled ? "text-[#5A381F]" : "text-white"
             }`}
           >
@@ -298,7 +295,7 @@ console.log(to_email);
 
           <Link
             href="/crops/register"
-            className={`py-1 font-medium ${
+            className={`w-full text-left py-2 font-medium ${
               scrolled ? "text-[#5A381F]" : "text-white"
             }`}
           >
@@ -307,7 +304,7 @@ console.log(to_email);
 
           <button
             onClick={fetchCropFeedback}
-            className={`py-1 font-medium ${
+            className={`w-full text-left py-2 font-medium ${
               scrolled ? "text-[#5A381F]" : "text-white"
             }`}
           >
@@ -319,7 +316,7 @@ console.log(to_email);
           {!user ? (
             <Link
               href="/auth/signin"
-              className={`px-4 py-2 rounded-lg w-fit ${
+              className={`w-full px-4 py-2 rounded-lg ${
                 scrolled
                   ? "bg-[#A66A3A] text-white"
                   : "bg-white/20 text-white backdrop-blur-sm"
@@ -355,7 +352,7 @@ console.log(to_email);
             <div
               key={i}
               dangerouslySetInnerHTML={{ __html: fb }}
-              className="mb-2"
+              className="mb-2 text-sm sm:text-base"
             />
           ))}
         </Toast>
