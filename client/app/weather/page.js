@@ -8,6 +8,7 @@ import MapComponent from "@/components/MapComponent";
 import VoiceAssistant from "@/components/VoiceAssistant";
 import WeatherWidget from "@/components/WeatherWidget";
 import "leaflet/dist/leaflet.css";
+import Loading from "@/components/loading";
 
 const getWeatherData = async (district) => {
   const apiKey = "4e2b41473b83f744ee4afc80dae9aac2";
@@ -266,9 +267,7 @@ export default function Weather() {
             </div>
           </>
         ) : (
-          <div className="text-center text-gray-800">
-            Loading weather data...
-          </div>
+          <Loading></Loading>
         )}
       </div>
 
