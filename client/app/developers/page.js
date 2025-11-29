@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useLanguage } from "@/app/LanguageContext";
+import WeatherWidget from "@/components/WeatherWidget";
+import "leaflet/dist/leaflet.css";
 
 export default function DevelopersPage() {
   const { lang } = useLanguage();
@@ -149,6 +151,8 @@ export default function DevelopersPage() {
           </motion.div>
         ))}
       </div>
+
+      <WeatherWidget districtName="Dhaka" lat={23.8103} lon={90.4125} />
     </main>
   );
 }

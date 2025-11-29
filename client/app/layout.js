@@ -3,7 +3,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { LanguageProvider } from "@/app/LanguageContext";
-import { Providers } from "@/app/providers";   // ✅ React Query Provider
+import { Providers } from "@/app/providers"; // ✅ React Query Provider
 import { usePathname } from "next/navigation";
 import Footer from "@/components/Footer";
 
