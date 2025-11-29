@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useFirebaseUser } from "@/app/useFirebaseUser";
+import Swal from "sweetalert2";
 
 export default function CropRegistrationForm() {
   const { lang } = useLanguage();
@@ -49,7 +50,13 @@ export default function CropRegistrationForm() {
     e.preventDefault();
 
     if (!user?.email) {
-      alert("User not logged in.");
+      Swal.fire({
+        icon: "error",
+        title: lang === "bn" ? "ত্রুটি!" : "Error",
+        text:
+          lang === "bn" ? "ব্যবহারকারী লগইন করা হয়নি।" : "User not logged in.",
+        confirmButtonColor: "#8c562e",
+      });
       return;
     }
 
@@ -69,24 +76,35 @@ export default function CropRegistrationForm() {
 
       // Backend-required fields
       batchId: Math.floor(100000 + Math.random() * 900000), // Auto random batch ID
-      farmerId: user.email.split("@")[0].toUpperCase(),     // Example: faisal@example.com → FAISAL
-      status: "planted",                                    // Default
+      farmerId: user.email.split("@")[0].toUpperCase(), // Example: faisal@example.com → FAISAL
+      status: "planted", // Default
       createdAt: getBdIso(),
       updatedAt: getBdIso(),
     };
 
     try {
-      const res = await fetch("https://agri-shield-w53f.onrender.com/api/crops/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        "https://agri-shield-w53f.onrender.com/api/crops/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || "Failed to register crop");
 
-      alert(lang === "bn" ? "ফসল সফলভাবে নিবন্ধিত হয়েছে!" : "Crop Registered Successfully!");
+      Swal.fire({
+        icon: "success",
+        title: lang === "bn" ? "সফল!" : "Success!",
+        text:
+          lang === "bn"
+            ? "ফসল সফলভাবে নিবন্ধিত হয়েছে!"
+            : "Crop Registered Successfully!",
+        confirmButtonColor: "#8c562e",
+      });
 
       // Reset form
       setFormData({
@@ -100,10 +118,14 @@ export default function CropRegistrationForm() {
           storageDate: "",
         },
       });
-
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      Swal.fire({
+        icon: "error",
+        title: lang === "bn" ? "ত্রুটি!" : "Error",
+        text: err.message,
+        confirmButtonColor: "#8c562e",
+      });
     }
   };
 
@@ -114,13 +136,11 @@ export default function CropRegistrationForm() {
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="relative backdrop-blur-md bg-white/10 border border-white/30 shadow-xl rounded-3xl p-8 w-full max-w-lg">
-
           <h1 className="text-3xl font-bold text-center text-white mb-6">
             {lang === "bn" ? "ফসল নিবন্ধন" : "Register Crop"}
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
             <input
               type="text"
               name="cropName"
@@ -141,11 +161,21 @@ export default function CropRegistrationForm() {
               <option value="" className="text-black">
                 {lang === "bn" ? "ফসলের ধরন" : "Crop Type"}
               </option>
-              <option value="Grain" className="text-black">Grain</option>
-              <option value="Vegetable" className="text-black">Vegetable</option>
-              <option value="Fruit" className="text-black">Fruit</option>
-              <option value="Oil Seed" className="text-black">Oil Seed</option>
-              <option value="Pulse" className="text-black">Pulse</option>
+              <option value="Grain" className="text-black">
+                Grain
+              </option>
+              <option value="Vegetable" className="text-black">
+                Vegetable
+              </option>
+              <option value="Fruit" className="text-black">
+                Fruit
+              </option>
+              <option value="Oil Seed" className="text-black">
+                Oil Seed
+              </option>
+              <option value="Pulse" className="text-black">
+                Pulse
+              </option>
             </select>
 
             <input
@@ -154,7 +184,9 @@ export default function CropRegistrationForm() {
               min="0"
               value={formData.estimatedWeightKg}
               onChange={handleChange}
-              placeholder={lang === "bn" ? "ওজন (কেজি)" : "Estimated Weight (kg)"}
+              placeholder={
+                lang === "bn" ? "ওজন (কেজি)" : "Estimated Weight (kg)"
+              }
               required
               className="w-full p-3 bg-white/20 text-white rounded-md border border-white/30"
             />
@@ -205,7 +237,6 @@ export default function CropRegistrationForm() {
             >
               {lang === "bn" ? "ফসল নিবন্ধন করুন" : "Register Crop"}
             </button>
-
           </form>
         </div>
       </div>

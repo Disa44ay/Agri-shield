@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Loading from "./loading";
 
 export default function WeatherWidget({
   districtName,
@@ -54,7 +55,7 @@ export default function WeatherWidget({
     <div className="p-4 bg-gray-50 border rounded-lg w-96">
       <h3 className="font-semibold text-gray-700">{districtName} আবহাওয়া</h3>
       {loading ? (
-        <p>লোড হচ্ছে…</p>
+       <Loading></Loading>
       ) : (
         <p className="text-gray-800">
           তাপমাত্রা: {onWeatherUpdate.temp}°C, আর্দ্রতা:{" "}

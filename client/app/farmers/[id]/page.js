@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/app/LanguageContext";
 import Link from "next/link";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Loading from "@/components/loading";
 
 /* ---------------------------------------------
    BANGLA MAPS
@@ -194,11 +195,7 @@ export default function FarmerDetails() {
     achievementsQuery.isLoading ||
     cropsQuery.isLoading
   )
-    return (
-      <p className="text-center text-white pt-20 text-xl animate-pulse">
-        Loading…
-      </p>
-    );
+    return <Loading></Loading>;
 
   const farmers = farmersQuery.data || [];
 
