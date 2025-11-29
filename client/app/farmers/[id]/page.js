@@ -133,16 +133,14 @@ const cropsBn = {
   Turmeric: "হলুদ",
 };
 
-
 const achievementsBn = {
   "First Harvest of the Season": "মৌসুমের প্রথম ফসল সংগ্রহ",
   "Saved by a Brink": "শেষ মুহূর্তে ফসল রক্ষা",
   "Healthy Growth Guardian": "সুস্থ ফসল বৃদ্ধির অভিভাবক",
-  "Bronze": "ব্রোঞ্জ পুরস্কার",
+  Bronze: "ব্রোঞ্জ পুরস্কার",
   "Pest Protector": "পোকামাকড় প্রতিরোধক",
   "Sustainable Farmer": "টেকসই কৃষক",
 };
-
 
 const translate = (value, map, lang) =>
   lang === "bn" ? map[value] || value : value;
@@ -181,12 +179,26 @@ export default function FarmerDetails() {
   const t = text[lang];
 
   /* FETCH DATA */
-  const farmersQuery = useQuery({ queryKey: ["farmers"], queryFn: getFarmersData });
-  const achievementsQuery = useQuery({ queryKey: ["achievements"], queryFn: getAchievementsData });
+  const farmersQuery = useQuery({
+    queryKey: ["farmers"],
+    queryFn: getFarmersData,
+  });
+  const achievementsQuery = useQuery({
+    queryKey: ["achievements"],
+    queryFn: getAchievementsData,
+  });
   const cropsQuery = useQuery({ queryKey: ["crops"], queryFn: getCropsData });
 
-  if (farmersQuery.isLoading || achievementsQuery.isLoading || cropsQuery.isLoading)
-    return <p className="text-center text-white pt-20 text-xl animate-pulse">Loading…</p>;
+  if (
+    farmersQuery.isLoading ||
+    achievementsQuery.isLoading ||
+    cropsQuery.isLoading
+  )
+    return (
+      <p className="text-center text-white pt-20 text-xl animate-pulse">
+        Loading…
+      </p>
+    );
 
   const farmers = farmersQuery.data || [];
 
@@ -196,18 +208,22 @@ export default function FarmerDetails() {
   );
 
   if (!farmer)
-    return <p className="text-center text-white pt-20 text-xl">Farmer not found.</p>;
+    return (
+      <p className="text-center text-white pt-20 text-xl">Farmer not found.</p>
+    );
 
   const userEmail = farmer.email;
 
   // Achievement matching
-  const userAchievements =
-    achievementsQuery.data?.find((a) => a.userEmail === userEmail) || {
-      achievements: [],
-    };
+  const userAchievements = achievementsQuery.data?.find(
+    (a) => a.userEmail === userEmail
+  ) || {
+    achievements: [],
+  };
 
   // Crop matching
-  const userCrops = cropsQuery.data?.filter((c) => c.userEmail === userEmail) || [];
+  const userCrops =
+    cropsQuery.data?.filter((c) => c.userEmail === userEmail) || [];
 
   const displayDivision = translate(farmer.division, divisionBn, lang);
   const displayDistrict = translate(farmer.district, districtBn, lang);
@@ -215,10 +231,12 @@ export default function FarmerDetails() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen pb-20">
-
         {/* Top bar */}
         <div className="flex justify-between items-center max-w-6xl mx-auto px-6 mt-8">
-          <Link href="/farmers" className="text-[#F4D9A3] hover:text-white font-semibold">
+          <Link
+            href="/farmers"
+            className="text-[#F4D9A3] hover:text-white font-semibold"
+          >
             {t.back}
           </Link>
 
@@ -231,7 +249,6 @@ export default function FarmerDetails() {
         </div>
 
         <div className="max-w-6xl mx-auto mt-12 grid grid-cols-1 lg:grid-cols-3 gap-10 px-6">
-
           {/* LEFT CARD */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -302,7 +319,9 @@ export default function FarmerDetails() {
                       🌾 {translate(crop.cropName, cropsBn, lang)}
                     </h4>
 
-                    <p className="text-white/80">⚖️ {crop.estimatedWeightKg} kg</p>
+                    <p className="text-white/80">
+                      ⚖️ {crop.estimatedWeightKg} kg
+                    </p>
                     <p className="text-white/80">
                       🗓 {t.harvest}: {crop.harvestDate}
                     </p>
@@ -317,11 +336,9 @@ export default function FarmerDetails() {
                     </div>
                   </motion.div>
                 ))}
-
               </div>
             )}
           </motion.div>
-
         </div>
       </div>
     </ProtectedRoute>
