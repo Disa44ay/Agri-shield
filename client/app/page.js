@@ -52,59 +52,61 @@ export default function LandingPage() {
 
   return (
     <main className="w-full text-white">
-
       {/* HERO */}
       <section className="relative w-full min-h-[92vh] flex items-center">
-        <div className="relative max-w-7xl mx-auto px-6 py-24 flex flex-col lg:flex-row items-center gap-20">
-
+        <div className="relative max-w-7xl mx-auto px-6 py-16 sm:py-20 flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-20">
           {/* LEFT */}
-          <div className="flex-1 fade-up" style={{ textShadow: "0 3px 6px rgba(0,0,0,0.9)" }}>
-            <h1 className="text-4xl lg:text-6xl font-extrabold leading-tight">
+          <div
+            className="flex-1 fade-up text-center lg:text-left"
+            style={{ textShadow: "0 3px 6px rgba(0,0,0,0.9)" }}
+          >
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
               {text[lang].title}
             </h1>
 
-            <p className="mt-5 text-2xl lg:text-3xl font-bold text-[#F9DFA9] drop-shadow-xl">
+            <p className="mt-4 sm:mt-5 text-xl sm:text-2xl lg:text-3xl font-bold text-[#F9DFA9] drop-shadow-xl">
               {text[lang].heroStrong}
             </p>
 
-            <div className="mt-6 max-w-xl p-5 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl">
-              <p className="text-lg lg:text-xl text-[#FFF9E8] leading-relaxed">
+            <div className="mt-4 sm:mt-6 max-w-xl mx-auto lg:mx-0 p-4 sm:p-5 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl">
+              <p className="text-base sm:text-lg lg:text-xl text-[#FFF9E8] leading-relaxed">
                 {text[lang].subtitle}
               </p>
             </div>
 
             <button
               onClick={() => (window.location.href = "/auth/signup")}
-              className="mt-10 px-7 py-3 rounded-xl text-lg font-semibold bg-[#A66A3A] hover:bg-[#8c562e] text-white shadow-xl transition-all inline-flex items-center gap-2"
+              className="mt-6 sm:mt-10 px-5 sm:px-7 py-2 sm:py-3 rounded-xl text-base sm:text-lg font-semibold bg-[#A66A3A] hover:bg-[#8c562e] text-white shadow-xl transition-all inline-flex items-center gap-2"
             >
               {text[lang].getStarted} →
             </button>
 
-            <div className="mt-10 grid sm:grid-cols-3 gap-4 text-sm">
-              {[text[lang].stat1, text[lang].stat2, text[lang].stat3].map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-white/15 backdrop-blur-xl border border-white/30 rounded-xl p-4 text-center shadow-lg"
-                  style={{ textShadow: "0 2px 4px rgba(0,0,0,0.7)" }}
-                >
-                  <p className="font-semibold">{item}</p>
-                </div>
-              ))}
+            <div className="mt-6 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              {[text[lang].stat1, text[lang].stat2, text[lang].stat3].map(
+                (item, i) => (
+                  <div
+                    key={i}
+                    className="bg-white/15 backdrop-blur-xl border border-white/30 rounded-xl p-3 sm:p-4 text-center shadow-lg"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.7)" }}
+                  >
+                    <p className="font-semibold">{item}</p>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
           {/* RIGHT */}
-          <div className="flex-1 fade-delay-2 h-[480px] lg:h-[650px] scale-[1.55] drop-shadow-[0_15px_40px_rgba(0,0,0,0.9)]">
+          <div className="flex-1 fade-delay-2 h-[300px] sm:h-[400px] md:h-[480px] lg:h-[650px] scale-[1.3] sm:scale-[1.45] lg:scale-[1.55] drop-shadow-[0_15px_40px_rgba(0,0,0,0.9)] mt-8 lg:mt-0">
             <FarmerAnimation />
           </div>
-
         </div>
       </section>
 
       {/* Client-only sections */}
       <TopFarmersSection />
       <LandingSections />
-      <SDGHighlight></SDGHighlight>
+      <SDGHighlight />
     </main>
   );
 }

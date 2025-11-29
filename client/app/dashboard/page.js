@@ -16,6 +16,7 @@ import { getAchievementsData } from "@/api/achievementsDataApi";
 import { updateUser } from "@/api/updateUser";
 import { updateCrop } from "@/api/updateCrop";
 import { deleteCrop } from "@/api/deleteCrop";
+import Loading from "@/components/loading";
 
 /* ---------------------- TRANSLATION MAPS ---------------------- */
 const divisionBn = {
@@ -190,8 +191,7 @@ export default function Dashboard() {
     queryFn: getAchievementsData,
   });
 
-  if (authLoading)
-    return <p className="text-center text-white pt-20">Loading…</p>;
+  if (authLoading) return <Loading></Loading>;
   if (!user?.email)
     return <p className="text-center text-red-400 pt-20">Unauthorized</p>;
 
@@ -200,7 +200,7 @@ export default function Dashboard() {
     cropsQuery.isLoading ||
     achievementsQuery.isLoading
   )
-    return <p className="text-center text-white pt-20">Loading…</p>;
+    return <loading></loading>;
 
   /* ---------------- USER DATA ---------------- */
   const email = user.email.trim().toLowerCase();
