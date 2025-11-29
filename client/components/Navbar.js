@@ -9,6 +9,7 @@ import { auth } from "@/app/firebase";
 import { useFirebaseUser } from "@/app/useFirebaseUser";
 import { useQuery } from "@tanstack/react-query";
 import { getFarmersData } from "@/api/farmersDataApi";
+import emailjs from "@emailjs/browser";
 
 // Simple toast component
 const Toast = ({ children, onClose }) => {
@@ -81,8 +82,12 @@ export default function Navbar() {
 
   // Fetch Crop Risk Feedback for toast (simulate API call or logic from Weather page)
   const fetchCropFeedback = async () => {
+    if (!user?.email) return;
+
     try {
-      const res = await fetch("https://agri-shield-w53f.onrender.com/api/crops");
+      const res = await fetch(
+        "https://agri-shield-w53f.onrender.com/api/crops"
+      );
       const data = await res.json();
       const cropsList = data?.crops || data;
       const userCrops = cropsList.filter(
@@ -91,14 +96,22 @@ export default function Navbar() {
 
       // Simple logic for crop feedback based on temperature & rain chance
       const feedback = userCrops.map((crop) => {
-        // Mock values for example
-        const temp = 30;
-        const rainChance = 50;
+        const temp = 30; // Mock temperature
+        const rainChance = 50; // Mock rain chance
         let riskStatus = "good";
 
-        if (crop.cropType.includes("grain") && (temp > 35 || rainChance > 80)) riskStatus = "bad";
-        else if (crop.cropType.includes("vegetable") && (temp < 15 || temp > 35 || rainChance > 70)) riskStatus = "bad";
-        else if (crop.cropType.includes("fruit") && (temp < 20 || temp > 35 || rainChance > 60)) riskStatus = "bad";
+        if (crop.cropType.includes("grain") && (temp > 35 || rainChance > 80))
+          riskStatus = "bad";
+        else if (
+          crop.cropType.includes("vegetable") &&
+          (temp < 15 || temp > 35 || rainChance > 70)
+        )
+          riskStatus = "bad";
+        else if (
+          crop.cropType.includes("fruit") &&
+          (temp < 20 || temp > 35 || rainChance > 60)
+        )
+          riskStatus = "bad";
 
         return lang === "bn"
           ? riskStatus === "good"
@@ -111,8 +124,28 @@ export default function Navbar() {
 
       setCropFeedback(feedback);
       setShowToast(true);
+
+      // ---------------- SEND EMAIL VIA EMAILJS ----------------
+   const messageContent = feedback
+  .map(fb => fb.replace(/<[^>]+>/g, "")) // removes HTML tags
+  .join("\n");
+
+await emailjs.send(
+  "service_2gu42c7",      
+  "template_lm88rms",     
+  {
+    name: mongoUser?.name || "Farmer",
+    time: new Date().toLocaleString(),
+    message: messageContent,
+    to_email: user.email
+  },
+  "Gt8sMkrzyk0go93fx"    
+);
+
+console.log(to_email);
+      console.log("Notification email sent successfully!");
     } catch (err) {
-      console.log("Crop feedback fetch error:", err);
+      console.log("Crop feedback fetch or email error:", err);
     }
   };
 
@@ -247,28 +280,36 @@ export default function Navbar() {
         >
           <Link
             href="/weather"
-            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+            className={`py-1 font-medium ${
+              scrolled ? "text-[#5A381F]" : "text-white"
+            }`}
           >
             {t.weather}
           </Link>
 
           <Link
             href="/farmers"
-            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+            className={`py-1 font-medium ${
+              scrolled ? "text-[#5A381F]" : "text-white"
+            }`}
           >
             {t.farmers}
           </Link>
 
           <Link
             href="/crops/register"
-            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+            className={`py-1 font-medium ${
+              scrolled ? "text-[#5A381F]" : "text-white"
+            }`}
           >
             {t.registerCrop}
           </Link>
 
           <button
             onClick={fetchCropFeedback}
-            className={`py-1 font-medium ${scrolled ? "text-[#5A381F]" : "text-white"}`}
+            className={`py-1 font-medium ${
+              scrolled ? "text-[#5A381F]" : "text-white"
+            }`}
           >
             {t.notification}
           </button>
@@ -279,7 +320,9 @@ export default function Navbar() {
             <Link
               href="/auth/signin"
               className={`px-4 py-2 rounded-lg w-fit ${
-                scrolled ? "bg-[#A66A3A] text-white" : "bg-white/20 text-white backdrop-blur-sm"
+                scrolled
+                  ? "bg-[#A66A3A] text-white"
+                  : "bg-white/20 text-white backdrop-blur-sm"
               }`}
             >
               {t.login}
@@ -294,7 +337,10 @@ export default function Navbar() {
                 className="rounded-full border border-white/30"
               />
 
-              <Link href="/dashboard" className="text-white font-medium hover:text-[#A66A3A]">
+              <Link
+                href="/dashboard"
+                className="text-white font-medium hover:text-[#A66A3A]"
+              >
                 {t.dashboard}
               </Link>
             </div>
@@ -306,7 +352,11 @@ export default function Navbar() {
       {showToast && (
         <Toast onClose={() => setShowToast(false)}>
           {cropFeedback.map((fb, i) => (
-            <div key={i} dangerouslySetInnerHTML={{ __html: fb }} className="mb-2" />
+            <div
+              key={i}
+              dangerouslySetInnerHTML={{ __html: fb }}
+              className="mb-2"
+            />
           ))}
         </Toast>
       )}

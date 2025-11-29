@@ -9,22 +9,16 @@ const getWeatherData = async (district) => {
   const apiKey = "4e2b41473b83f744ee4afc80dae9aac2";
   const weatherApiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${district},BD&units=metric&appid=${apiKey}`;
 
-  try {
-    const res = await fetch(weatherApiUrl);
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    console.log("Weather fetch error:", err);
-    return null;
-  }
+  const res = await fetch(weatherApiUrl);
+  const data = await res.json();
+  return data;
 };
 
 const extractNextFiveDays = (list) => {
-  if (!list || !Array.isArray(list)) return [];
   const daily = {};
   list.forEach((item) => {
-    const date = item.dt_txt?.split(" ")[0];
-    if (date && !daily[date]) daily[date] = item;
+    const date = item.dt_txt.split(" ")[0];
+    if (!daily[date]) daily[date] = item;
   });
   return Object.values(daily).slice(1, 6);
 };
@@ -33,9 +27,10 @@ const getCropData = async (userEmail) => {
   try {
     const res = await fetch("https://agri-shield-w53f.onrender.com/api/crops");
     const data = await res.json();
+    // Adjusted to access "crops" property if API returns { crops: [...] }
     const cropsList = data?.crops || data;
     const userCrops = cropsList.filter(
-      (c) => c.userEmail?.toLowerCase() === userEmail?.toLowerCase()
+      (c) => c.userEmail.toLowerCase() === userEmail.toLowerCase()
     );
     return userCrops || [];
   } catch (err) {
@@ -48,6 +43,7 @@ export default function Weather() {
   const [weatherData, setWeatherData] = useState(null);
   const [district, setDistrict] = useState("Rajshahi");
   const [userEmail, setUserEmail] = useState(null);
+  const [crops, setCrops] = useState([]);
   const { lang } = useLanguage();
 
   // Get logged-in user email
@@ -58,7 +54,7 @@ export default function Weather() {
     });
   }, []);
 
-  // Fetch user's district
+  // Fetch user's district and crops
   useEffect(() => {
     if (!userEmail) return;
 
@@ -69,7 +65,7 @@ export default function Weather() {
         );
         const data = await res.json();
         const matchedUser = data?.users?.find(
-          (u) => u.email?.toLowerCase() === userEmail.toLowerCase()
+          (u) => u.email.toLowerCase() === userEmail.toLowerCase()
         );
         if (matchedUser?.district) setDistrict(matchedUser.district);
       } catch (err) {
@@ -77,17 +73,19 @@ export default function Weather() {
       }
     };
 
+    const fetchUserCrops = async () => {
+      const userCrops = await getCropData(userEmail);
+      setCrops(userCrops);
+    };
+
     fetchUserDistrict();
+    fetchUserCrops();
   }, [userEmail]);
 
   // Fetch weather data
   useEffect(() => {
-    if (!district) return;
-
     const fetchWeatherData = async () => {
       const data = await getWeatherData(district);
-      if (!data) return;
-
       const nextFive = extractNextFiveDays(data.list);
       setWeatherData({ ...data, list: nextFive });
     };
@@ -128,6 +126,35 @@ export default function Weather() {
         dangerouslySetInnerHTML={{ __html: advisoryText }}
       />
     );
+  };
+
+  const renderRiskFeedback = (weather, crop) => {
+    const temp = weather.main.temp;
+    const rainChance = weather.pop * 100;
+    let riskStatus = "good";
+
+    if (crop.cropType.includes("grain")) {
+      if (temp > 35 || rainChance > 80) riskStatus = "bad";
+    } else if (crop.cropType.includes("vegetable")) {
+      if (temp < 15 || temp > 35 || rainChance > 70) riskStatus = "bad";
+    } else if (crop.cropType.includes("fruit")) {
+      if (temp < 20 || temp > 35 || rainChance > 60) riskStatus = "bad";
+    } else if (crop.cropType.includes("oilseed")) {
+      if (temp < 18 || temp > 32 || rainChance > 75) riskStatus = "bad";
+    } else if (crop.cropType.includes("pulse")) {
+      if (temp < 18 || temp > 33 || rainChance > 70) riskStatus = "bad";
+    }
+
+    const text =
+      lang === "bn"
+        ? riskStatus === "good"
+          ? `<p class="text-green-400 font-semibold">${crop.cropName} এর জন্য আবহাওয়া ভালো আছে।</p>`
+          : `<p class="text-red-400 font-semibold">${crop.cropName} এর জন্য আবহাওয়া অনুকূল নয়, সতর্ক থাকুন।</p>`
+        : riskStatus === "good"
+        ? `<p class="text-green-400 font-semibold">Weather is good for ${crop.cropName}.</p>`
+        : `<p class="text-red-400 font-semibold">Weather is not favorable for ${crop.cropName}, stay alert.</p>`;
+
+    return <div dangerouslySetInnerHTML={{ __html: text }} />;
   };
 
   const renderWeatherIcon = (weather) => {
@@ -192,7 +219,7 @@ export default function Weather() {
           {lang === "bn" ? "আবহাওয়া" : "Weather"} - {district}
         </h1>
 
-        {weatherData && weatherData.list?.length ? (
+        {weatherData ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8 justify-items-center">
               {weatherData.list.map((day, index) => (
@@ -205,15 +232,15 @@ export default function Weather() {
                     {formatBDDate(day.dt_txt)}
                   </h3>
                   <div className="mt-4">
-                    {renderWeatherIcon(day.weather[0]?.main)}
+                    {renderWeatherIcon(day.weather[0].main)}
                   </div>
                   <div className="mt-4 text-2xl">
                     {lang === "bn" ? "তাপমাত্রা" : "Temperature"}:{" "}
-                    {day.main?.temp}°C
+                    {day.main.temp}°C
                   </div>
                   <div className="text-xl">
                     {lang === "bn" ? "আর্দ্রতা" : "Humidity"}:{" "}
-                    {day.main?.humidity}%
+                    {day.main.humidity}%
                   </div>
                   <div className="text-xl">
                     {lang === "bn" ? "বৃষ্টির সম্ভাবনা" : "Chance of Rain"}:{" "}
@@ -229,6 +256,8 @@ export default function Weather() {
               </h2>
               {weatherData.list[0] && renderAdvisory(weatherData.list[0])}
             </div>
+
+           
           </>
         ) : (
           <div className="text-center text-gray-800">
