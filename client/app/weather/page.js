@@ -14,43 +14,47 @@ const getWeatherData = async (district) => {
   return data;
 };
 
-
-// Correct 5-day extraction
-
 const extractNextFiveDays = (list) => {
   const daily = {};
-
   list.forEach((item) => {
     const date = item.dt_txt.split(" ")[0];
-    if (!daily[date]) {
-      daily[date] = item;
-    }
+    if (!daily[date]) daily[date] = item;
   });
+  return Object.values(daily).slice(1, 6);
+};
 
-  const days = Object.values(daily);
-  return days.slice(1, 6);
+const getCropData = async (userEmail) => {
+  try {
+    const res = await fetch("https://agri-shield-w53f.onrender.com/api/crops");
+    const data = await res.json();
+    // Adjusted to access "crops" property if API returns { crops: [...] }
+    const cropsList = data?.crops || data;
+    const userCrops = cropsList.filter(
+      (c) => c.userEmail.toLowerCase() === userEmail.toLowerCase()
+    );
+    return userCrops || [];
+  } catch (err) {
+    console.log("Crop fetch error:", err);
+    return [];
+  }
 };
 
 export default function Weather() {
   const [weatherData, setWeatherData] = useState(null);
   const [district, setDistrict] = useState("Rajshahi");
   const [userEmail, setUserEmail] = useState(null);
+  const [crops, setCrops] = useState([]);
   const { lang } = useLanguage();
 
-
-  //Get logged in Firebase user email
- 
+  // Get logged-in user email
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      if (user?.email) {
-        setUserEmail(user.email);
-      }
+      if (user?.email) setUserEmail(user.email);
     });
   }, []);
 
-  // Fetch DB users and match district
-  
+  // Fetch user's district and crops
   useEffect(() => {
     if (!userEmail) return;
 
@@ -60,37 +64,33 @@ export default function Weather() {
           "https://agri-shield-w53f.onrender.com/api/users"
         );
         const data = await res.json();
-
         const matchedUser = data?.users?.find(
           (u) => u.email.toLowerCase() === userEmail.toLowerCase()
         );
-
-        if (matchedUser?.district) {
-          setDistrict(matchedUser.district);
-        }
+        if (matchedUser?.district) setDistrict(matchedUser.district);
       } catch (err) {
         console.log("User district fetch error:", err);
       }
     };
 
+    const fetchUserCrops = async () => {
+      const userCrops = await getCropData(userEmail);
+      setCrops(userCrops);
+    };
+
     fetchUserDistrict();
+    fetchUserCrops();
   }, [userEmail]);
 
-
-  // Weather Fetching
-  
+  // Fetch weather data
   useEffect(() => {
     const fetchWeatherData = async () => {
       const data = await getWeatherData(district);
       const nextFive = extractNextFiveDays(data.list);
       setWeatherData({ ...data, list: nextFive });
     };
-
     fetchWeatherData();
   }, [district]);
-
-  
-  // Convert UTC → BD Time
 
   const formatBDDate = (utcString) => {
     const utcDate = new Date(utcString);
@@ -106,54 +106,18 @@ export default function Weather() {
     if (rainChance > 80) {
       advisoryText =
         lang === "bn"
-          ? `
-        <ul class="">
-          <li><strong>বৃষ্টির সম্ভাবনা:</strong> ${rainChance}%</li>
-          <li>আগামী ৩ দিন বৃষ্টি ${rainChance}%।</li>
-          <li>আজই ধান কাটুন অথবা ঢেকে রাখুন।</li>
-          <li>বৃষ্টি হলে পানি জমতে পারে, সেচ ব্যবস্থা ঠিক রাখুন।</li>
-        </ul>`
-          : `
-        <ul class="">
-          <li><strong>Rain chances:</strong> ${rainChance}%</li>
-          <li>Rain chances of ${rainChance}% for the next 3 days.</li>
-          <li>Harvest today or cover crops.</li>
-          <li>Ensure drainage to prevent waterlogging.</li>
-        </ul>`;
+          ? `<ul><li><strong>বৃষ্টির সম্ভাবনা:</strong> ${rainChance}%</li><li>আগামী ৩ দিন বৃষ্টি ${rainChance}%।</li><li>আজই ধান কাটুন অথবা ঢেকে রাখুন।</li><li>বৃষ্টি হলে পানি জমতে পারে, সেচ ব্যবস্থা ঠিক রাখুন।</li></ul>`
+          : `<ul><li><strong>Rain chances:</strong> ${rainChance}%</li><li>Rain chances of ${rainChance}% for the next 3 days.</li><li>Harvest today or cover crops.</li><li>Ensure drainage to prevent waterlogging.</li></ul>`;
     } else if (temp > 36) {
       advisoryText =
         lang === "bn"
-          ? `
-        <ul class="">
-          <li><strong>তাপমাত্রা:</strong> ${temp}°C</li>
-          <li>তাপমাত্রা ${temp}°C পর্যন্ত উঠতে পারে।</li>
-          <li>গাছের বৃদ্ধিতে প্রভাব ফেলতে পারে।</li>
-          <li>সেচ বাড়ান এবং ছায়া দিন।</li>
-        </ul>`
-          : `
-        <ul class="">
-          <li><strong>Temperature:</strong> ${temp}°C</li>
-          <li>Temperature may rise to ${temp}°C.</li>
-          <li>High heat can slow plant growth.</li>
-          <li>Increase irrigation and provide shade.</li>
-        </ul>`;
+          ? `<ul><li><strong>তাপমাত্রা:</strong> ${temp}°C</li><li>তাপমাত্রা ${temp}°C পর্যন্ত উঠতে পারে।</li><li>গাছের বৃদ্ধিতে প্রভাব ফেলতে পারে।</li><li>সেচ বাড়ান এবং ছায়া দিন।</li></ul>`
+          : `<ul><li><strong>Temperature:</strong> ${temp}°C</li><li>Temperature may rise to ${temp}°C.</li><li>High heat can slow plant growth.</li><li>Increase irrigation and provide shade.</li></ul>`;
     } else {
       advisoryText =
         lang === "bn"
-          ? `
-        <ul class="">
-          <li><strong>তাপমাত্রা:</strong> ${temp}°C</li>
-          <li>কৃষির জন্য ভালো সময়।</li>
-          <li>সেচ ও ফসল তোলার জন্য উপযোগী।</li>
-          <li>আর্দ্রতা কমতে পারে, সেচ নিয়ন্ত্রণে রাখুন।</li>
-        </ul>`
-          : `
-        <ul class="">
-          <li><strong>Temperature:</strong> ${temp}°C</li>
-          <li>Good time for farming activities.</li>
-          <li>Suitable for irrigation and harvesting.</li>
-          <li>Humidity may drop, adjust watering accordingly.</li>
-        </ul>`;
+          ? `<ul><li><strong>তাপমাত্রা:</strong> ${temp}°C</li><li>কৃষির জন্য ভালো সময়।</li><li>সেচ ও ফসল তোলার জন্য উপযোগী।</li><li>আর্দ্রতা কমতে পারে, সেচ নিয়ন্ত্রণে রাখুন।</li></ul>`
+          : `<ul><li><strong>Temperature:</strong> ${temp}°C</li><li>Good time for farming activities.</li><li>Suitable for irrigation and harvesting.</li><li>Humidity may drop, adjust watering accordingly.</li></ul>`;
     }
 
     return (
@@ -162,6 +126,35 @@ export default function Weather() {
         dangerouslySetInnerHTML={{ __html: advisoryText }}
       />
     );
+  };
+
+  const renderRiskFeedback = (weather, crop) => {
+    const temp = weather.main.temp;
+    const rainChance = weather.pop * 100;
+    let riskStatus = "good";
+
+    if (crop.cropType.includes("grain")) {
+      if (temp > 35 || rainChance > 80) riskStatus = "bad";
+    } else if (crop.cropType.includes("vegetable")) {
+      if (temp < 15 || temp > 35 || rainChance > 70) riskStatus = "bad";
+    } else if (crop.cropType.includes("fruit")) {
+      if (temp < 20 || temp > 35 || rainChance > 60) riskStatus = "bad";
+    } else if (crop.cropType.includes("oilseed")) {
+      if (temp < 18 || temp > 32 || rainChance > 75) riskStatus = "bad";
+    } else if (crop.cropType.includes("pulse")) {
+      if (temp < 18 || temp > 33 || rainChance > 70) riskStatus = "bad";
+    }
+
+    const text =
+      lang === "bn"
+        ? riskStatus === "good"
+          ? `<p class="text-green-400 font-semibold">${crop.cropName} এর জন্য আবহাওয়া ভালো আছে।</p>`
+          : `<p class="text-red-400 font-semibold">${crop.cropName} এর জন্য আবহাওয়া অনুকূল নয়, সতর্ক থাকুন।</p>`
+        : riskStatus === "good"
+        ? `<p class="text-green-400 font-semibold">Weather is good for ${crop.cropName}.</p>`
+        : `<p class="text-red-400 font-semibold">Weather is not favorable for ${crop.cropName}, stay alert.</p>`;
+
+    return <div dangerouslySetInnerHTML={{ __html: text }} />;
   };
 
   const renderWeatherIcon = (weather) => {
@@ -235,29 +228,23 @@ export default function Weather() {
                   className="backdrop-blur-md bg-black/50 p-6 rounded-lg shadow-lg text-center text-white my-4"
                   style={{ background: "rgba(255, 255, 255, 0.2)" }}
                 >
-                  <div className="mb-6 w-full">
-                    <h3 className="text-2xl font-semibold">
-                      {formatBDDate(day.dt_txt)}
-                    </h3>
-
-                    <div className="mt-4">
-                      {renderWeatherIcon(day.weather[0].main)}
-                    </div>
-
-                    <div className="mt-4 text-2xl">
-                      {lang === "bn" ? "তাপমাত্রা" : "Temperature"}:{" "}
-                      {day.main.temp}°C
-                    </div>
-
-                    <div className="text-xl">
-                      {lang === "bn" ? "আর্দ্রতা" : "Humidity"}:{" "}
-                      {day.main.humidity}%
-                    </div>
-
-                    <div className="text-xl">
-                      {lang === "bn" ? "বৃষ্টির সম্ভাবনা" : "Chance of Rain"}:{" "}
-                      {day.pop * 100}%
-                    </div>
+                  <h3 className="text-2xl font-semibold">
+                    {formatBDDate(day.dt_txt)}
+                  </h3>
+                  <div className="mt-4">
+                    {renderWeatherIcon(day.weather[0].main)}
+                  </div>
+                  <div className="mt-4 text-2xl">
+                    {lang === "bn" ? "তাপমাত্রা" : "Temperature"}:{" "}
+                    {day.main.temp}°C
+                  </div>
+                  <div className="text-xl">
+                    {lang === "bn" ? "আর্দ্রতা" : "Humidity"}:{" "}
+                    {day.main.humidity}%
+                  </div>
+                  <div className="text-xl">
+                    {lang === "bn" ? "বৃষ্টির সম্ভাবনা" : "Chance of Rain"}:{" "}
+                    {day.pop * 100}%
                   </div>
                 </div>
               ))}
@@ -268,6 +255,25 @@ export default function Weather() {
                 {lang === "bn" ? "কৃষকের পরামর্শ" : "Farmer's Advisory"}
               </h2>
               {weatherData.list[0] && renderAdvisory(weatherData.list[0])}
+            </div>
+
+            <div className="backdrop-blur-md bg-black/50 p-8 rounded-lg shadow-lg mt-6 text-center">
+              <h2 className="text-2xl font-bold text-white mb-4">
+                {lang === "bn" ? "ফসলের ঝুঁকি মূল্যায়ন" : "Crop Risk Feedback"}
+              </h2>
+              {crops.length > 0 && weatherData.list[0] ? (
+                crops.map((crop) => (
+                  <div key={crop._id} className="mb-2">
+                    {renderRiskFeedback(weatherData.list[0], crop)}
+                  </div>
+                ))
+              ) : (
+                <p className="text-white">
+                  {lang === "bn"
+                    ? "কোনো ফসলের তথ্য পাওয়া যায়নি।"
+                    : "No crop data found."}
+                </p>
+              )}
             </div>
           </>
         ) : (
