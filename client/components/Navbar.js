@@ -80,7 +80,7 @@ export default function Navbar() {
 
   const t = text[lang];
 
-  // Fetch Crop Risk Feedback for toast (simulate API call or logic from Weather page)
+  // Fetch Crop Risk Feedback for toast 
   const fetchCropFeedback = async () => {
     if (!user?.email) return;
 
@@ -96,8 +96,8 @@ export default function Navbar() {
 
       // Simple logic for crop feedback based on temperature & rain chance
       const feedback = userCrops.map((crop) => {
-        const temp = 30; // Mock temperature
-        const rainChance = 50; // Mock rain chance
+        const temp = 30;
+        const rainChance = 50;
         let riskStatus = "good";
 
         if (crop.cropType.includes("grain") && (temp > 35 || rainChance > 80))
@@ -127,7 +127,7 @@ export default function Navbar() {
 
       // ---------------- SEND EMAIL VIA EMAILJS ----------------
    const messageContent = feedback
-  .map(fb => fb.replace(/<[^>]+>/g, "")) // removes HTML tags
+  .map(fb => fb.replace(/<[^>]+>/g, ""))
   .join("\n");
 
 await emailjs.send(

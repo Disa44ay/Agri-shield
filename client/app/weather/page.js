@@ -27,7 +27,6 @@ const getCropData = async (userEmail) => {
   try {
     const res = await fetch("https://agri-shield-w53f.onrender.com/api/crops");
     const data = await res.json();
-    // Adjusted to access "crops" property if API returns { crops: [...] }
     const cropsList = data?.crops || data;
     const userCrops = cropsList.filter(
       (c) => c.userEmail.toLowerCase() === userEmail.toLowerCase()
