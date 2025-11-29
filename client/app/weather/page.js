@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/app/LanguageContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-// FIXED WEATHER FETCH (removed cnt=5)
 const getWeatherData = async (district) => {
   const apiKey = "4e2b41473b83f744ee4afc80dae9aac2";
   const weatherApiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${district},BD&units=metric&appid=${apiKey}`;
@@ -14,28 +14,71 @@ const getWeatherData = async (district) => {
   return data;
 };
 
+
+// Correct 5-day extraction
+
 const extractNextFiveDays = (list) => {
   const daily = {};
 
   list.forEach((item) => {
-    const date = item.dt_txt.split(" ")[0]; // take the date only
-
+    const date = item.dt_txt.split(" ")[0];
     if (!daily[date]) {
-      daily[date] = item; // first available entry for each date
+      daily[date] = item;
     }
   });
 
   const days = Object.values(daily);
-
-  return days.slice(1, 6); // skip today → give next 5 days
+  return days.slice(1, 6);
 };
-
 
 export default function Weather() {
   const [weatherData, setWeatherData] = useState(null);
   const [district, setDistrict] = useState("Rajshahi");
+  const [userEmail, setUserEmail] = useState(null);
   const { lang } = useLanguage();
 
+
+  //Get logged in Firebase user email
+ 
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user?.email) {
+        setUserEmail(user.email);
+      }
+    });
+  }, []);
+
+  // Fetch DB users and match district
+  
+  useEffect(() => {
+    if (!userEmail) return;
+
+    const fetchUserDistrict = async () => {
+      try {
+        const res = await fetch(
+          "https://agri-shield-w53f.onrender.com/api/users"
+        );
+        const data = await res.json();
+
+        const matchedUser = data?.users?.find(
+          (u) => u.email.toLowerCase() === userEmail.toLowerCase()
+        );
+
+        if (matchedUser?.district) {
+          setDistrict(matchedUser.district);
+        }
+      } catch (err) {
+        console.log("User district fetch error:", err);
+      }
+    };
+
+    fetchUserDistrict();
+  }, [userEmail]);
+
+
+  // Weather Fetching
+  
   useEffect(() => {
     const fetchWeatherData = async () => {
       const data = await getWeatherData(district);
@@ -46,7 +89,9 @@ export default function Weather() {
     fetchWeatherData();
   }, [district]);
 
-  // ⭐ FIX ADDED: Convert UTC dt_txt to Bangladesh Time (UTC+6)
+  
+  // Convert UTC → BD Time
+
   const formatBDDate = (utcString) => {
     const utcDate = new Date(utcString);
     const bdDate = new Date(utcDate.getTime() + 6 * 60 * 60 * 1000);
@@ -222,7 +267,7 @@ export default function Weather() {
               <h2 className="text-2xl font-bold text-white mb-4">
                 {lang === "bn" ? "কৃষকের পরামর্শ" : "Farmer's Advisory"}
               </h2>
-              {renderAdvisory(weatherData.list[0])}
+              {weatherData.list[0] && renderAdvisory(weatherData.list[0])}
             </div>
           </>
         ) : (
